@@ -1,0 +1,128 @@
+body {
+
+}
+
+.game-table {
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.game-table td {
+  border-style: none;
+}
+
+.game-box {
+  margin: 5px;
+  padding: 3px;
+  cursor: pointer;
+  position: relative;
+  text-align: left;
+}
+
+.game-box:hover {
+  background-color: #CCCCFF;
+}
+
+.game-title {
+  font-style: italic;
+}
+
+.game-title-header {
+  min-width: 300px;
+}
+
+.game-author {
+
+}
+
+.game-author-header {
+  min-width: 300px;
+}
+
+.option-bar {
+  clear: both;
+}
+
+.option-delete {
+  padding: 5px;
+  float: right;
+  bottom: 0;
+  right: 0;
+}
+
+.option-edit {
+  padding: 5px;
+  float: right;
+  bottom: 0;
+}
+
+.option-download {
+  padding: 5px;
+  float: right;
+  bottom: 0;
+}
+
+#credits {
+  clear: both;
+  padding-bottom: 5px;
+  padding-top: 15px;
+  text-align: center;
+  font-size: 80%;
+}
+
+#credits-dialog {
+  font-size: 80%;
+}
+
+#credits-dialog div {
+  padding: 5px;
+}
+
+#credits-dialog a {
+  color: blue;
+}
+
+.instructions {
+  padding-top: 10px;
+  padding-bottom: 15px;
+}
+
+.save-box {
+  width: 180px;
+  height: 50px;
+  margin: 5px;
+  padding: 3px;
+  background-color: #AAAAFF;
+  cursor: pointer;
+  float: left;
+  -webkit-border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.save-box:hover {
+  background-color: #4444FF;
+}
+
+.saves {
+  display: none;
+}
+
+#delete-save-name {
+  font-weight: bold;
+}
+
+#delete-save-game {
+  font-style: italic;
+}
+
+.play-button-box {
+  width: 20px;
+  background-image:url('images/control_play.png');
+  background-repeat:no-repeat;
+  background-position:center; 
+}
+
+.play-button-box:hover {
+  background-image:url('images/control_play_blue.png');
+}

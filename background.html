@@ -1,0 +1,13 @@
+<script>
+    // create the context menu item
+    chrome.contextMenus.removeAll();
+    chrome.contextMenus.create({
+        "type":"normal",
+        "title":"Play and add to library",
+        "contexts":["link"],
+        "targetUrlPatterns":["*://*/*.z5", "*://*/*.z7", "*://*/*.z8", "*://*/*.zblorb"],
+        "onclick": function(info) {
+            open("parchment.html?story=" + encodeURIComponent(info.linkUrl));
+        }
+    });
+</script>

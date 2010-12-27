@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Zedt</title>
+	<script src="lib/jquery.min.js"></script>
+	<script src="lib/jquery-ui-1.8.7.custom.min.js"></script>
+    <script src="lib/jquery.tablesorter.min.js"></script>
+	<script src="universal.js"></script>
+    <script src="src/parchment/file-chrome.js"></script>
+    <script src="init.js"></script>
+	<link rel="stylesheet" type="text/css" href="parchment.css">
+	<link rel="stylesheet" type="text/css" href="styles/ui-lightness/jquery-ui-1.8.7.custom.css">
+	<link rel="stylesheet" type="text/css" href="home.css">
+    <link rel="stylesheet" href="styles/tablesorter/style.css" type="text/css">
+	<meta name="viewport" content="width=device-width,user-scalable=no">
+
+    <script language="javascript">
+        function saveUI(game_id) {
+            var save_menu = "";
+            var save_list = window.localStorage.getItem("saves");
+            save_menu += "<tr class='saves' id='saves-" + encodeURIForId(game_id) + "'><td colspan='5'>";
+            if(save_list && save_list[game_id]) {
+                for(save_filename in save_list[game_id]) {
+                    save_menu += "<div class='save-box' id='s-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "'>";
+                    save_menu += "<strong>" + save_filename + "</strong><br/ >";
+                    save_menu += "<div class='save option-bar'>";
+                    //save_menu += "<div class='save option-download'><img class='save option-download-image' id='sd-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "' src='images/page_white_put.png' / ></div>";
+                    save_menu += "<div class='save option-delete'><img class='save option-delete-image' id='sd-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "' src='images/delete.png' / ></div>";
+                    save_menu += "</div></div>";
+                }
+                save_menu += "</td></tr>";
+            }
+            return save_menu;
+        }
+
+
+        function gameUI(key, game) {
+            var game_menu = "";
+            game = game ? game : {};
+            game_menu += "<tr class='game-box' id='g-" + encodeURIForId(key) + "'>";
+            game_menu += "<td class='play-button-box' id='play-" + encodeURIForId(key) + "'></td>";
+            game_menu += "<td class='game-title'>" + (game.title?game.title:key.split("/").pop()) + "</td>"
+            game_menu += "<td class='game-author'>"+ (game.author?game.author:"") + "</td>";
+
+            game_menu += "<td class='game option-bar'>";
+            game_menu += "<div class='game option-edit'><img class='game option-edit-image' id='ge-" + encodeURIForId(key) + "' src='images/edit.png' / ></div>";
+            game_menu += "<div class='game option-delete'><img class='game option-delete-image' id='gd-" + encodeURIForId(key) + "' src='images/delete.png' / ></div>";
+            game_menu += "</td>"
+            game_menu += "</tr>";
+
+            return game_menu;
+        }
+
+        // everything we do when the page loads
+        $(function() {
+            $('#edit-dialog').dialog({ autoOpen: false, modal: true, draggable: false, resizable: false });
+            $('#delete-save-dialog').dialog({ autoOpen: false, modal: true, draggable: false, resizable: false });
+            $('#delete-game-dialog').dialog({ autoOpen: false, modal: true, draggable: false, resizable: false });
+            $('#credits-dialog').dialog({ autoOpen: false, width: 500, modal: true, draggable: false, resizable: false });
+            $('#upload-game-dialog').dialog({ autoOpen: false, width: 500, modal: true, draggable: false, resizable: false });
+            $('#add-game-url-dialog').dialog({ autoOpen: false, width: 500, modal: true, draggable: false, resizable: false });
+
+            $.tablesorter.addWidget({ 
+                // give the widget a id 
+                id: "sortSaves", 
+                // format is called when the on init and when a sorting has finished 
+                format: function(table) {
+                    var $save_area = $('.saves');
+                    if($save_area.size() != 0) {
+                        $save_area.remove();
+                        $('#g-' + $save_area[0].id.split('-')[1]).after($save_area);
+                    }
+                }
+            });
+
+            var game_menu = "";
+            var game_count = -1;
+            var game_list = window.localStorage.getItem("games");
+            var save_list = window.localStorage.getItem("saves") || {};
+            var current_row = document.getElementById("row-1");
+
+            // create table of games and add headers
+            game_menu += "<table border='0' cellpadding='5' cellspacing='1' class='game-table tablesorter'>";
+            game_menu += "<thead><tr class='game-header'>";
+            game_menu += "<td class='game-play-header' width='1'> </td>";
+            game_menu += "<th class='game-title-header'>Title</th>";
+            game_menu += "<th class='game-author-header'>Author</th>";
+            game_menu += "<td class='game-option-header'></td>";
+            game_menu += "</tr></thead><tbody>";
+
+            // provide initial sort of keys
+            var game_keys_and_titles = [];
+            for(var key in game_list){
+                game_keys_and_titles.push([ key, game_list[key].title ]);
+            }
+
+            // sort by title
+            game_keys_and_titles.sort(function(a,b) { return a[1].toLowerCase() > b[1].toLowerCase(); });
+
+            var sorted_game_keys = [];
+            for(key in game_keys_and_titles){
+                sorted_game_keys[game_keys_and_titles[key][0]] = true;
+            }
+
+            // list all the games whose metadata we have in local storage
+            for(key in sorted_game_keys) {
+                game_count++;
+                var game = game_list[key];
+                game_menu += gameUI(key, game);
+            }
+            game_menu += "</tbody></table>";
+            current_row.innerHTML = game_menu;
+
+            // make game table sortable
+            $(".game-table").tablesorter({widgets:["sortSaves"]});
+
+            // play a game by clicking the play button
+			$('.play-button-box').click(function(){
+                window.open("parchment.html?story=" + decodeURIFromId(this.id.split('-')[1]));
+                return false;
+			});
+
+            // show/hide saved games when the game row is clicked
+			$('.game-box').live('click', function(){
+                // if a save list is in place but hidden, show it; otherwise, make a new one
+                var $save_area = $(this).next('.saves');
+                $('.saves').remove();
+                if($save_area.size() == 0) {
+                    $save_area = $(saveUI(decodeURIFromId(this.id.split('-')[1])));
+                    $(this).after($save_area);
+                    if($save_area.children('td').first().children().size() != 0) {
+                        $save_area.toggle();
+                    }
+                }
+			});
+
+            // load a save game on click
+            $('.save-box').live('click', function(){
+                var id_parts = this.id.split('-');
+                var game = decodeURIFromId(id_parts[1]);
+                var save_filename = decodeURIFromId(id_parts[2]);                
+                var save_data = window.localStorage.getItem("saves")[game][save_filename];
+                window.open("parchment.html?story=" + game + "#" + save_data);
+            });
+
+            // edit game bibligraphic info
+            $('.game.option-edit-image').live('click', function(){
+                var game_list = window.localStorage.getItem("games");
+                var game_id = $(this).parent().parent().parent().first()[0].id.split('-')[1];
+                var game_key = decodeURIFromId(game_id);
+                var game = game_list[game_key];
+
+	    		$('#edit-dialog').dialog({
+	    			autoOpen: true,
+		    		width: 500,
+                    modal: true,
+                    title: "Edit story",
+                    open: function() {
+                        $(this).find('#game-edit-url').val(game_key);
+                        $(this).find('#game-edit-title').val(game.title);
+                        $(this).find('#game-edit-author').val(game.author);
+                        //$(this).find('#game-edit-genre').val(game.genre);
+                        //$(this).find('#game-edit-rating').val(game.rating);
+                    },
+			    	buttons: {
+			    		"Ok": function() {
+                            var new_title = $.trim($(this).find('#game-edit-title').val());
+                            var new_author = $.trim($(this).find('#game-edit-author').val());
+                            if(new_title != '') {
+                                game_list[game_key].title = new_title;
+                            }
+                            game_list[game_key].author = new_author;
+
+                            window.localStorage.setItem("games", game_list);
+
+                            $('#g-' + game_id).find('.game-title').html(new_title);
+                            $('#g-' + game_id).find('.game-author').html(new_author);
+
+                            $(".game-table").trigger("update");
+
+			    			$(this).dialog("close");
+			    		}, 
+			    		"Cancel": function() { 
+			    			$(this).dialog("close");
+			    		} 
+			    	}
+			    });
+                return false;
+            });
+
+            // delete a game
+            $('.game.option-delete-image').live('click', function(){
+                var id = this.id;
+                var id_parts = id.split('-');
+                var game_key = decodeURIFromId(id_parts[1]);            
+                var save_list = window.localStorage.getItem("saves") || {};
+                var game_list = window.localStorage.getItem("games");
+
+	    		$('#delete-game-dialog').dialog({
+	    			autoOpen: true,
+		    		width: 500,
+                    modal: true,
+                    title: "Delete story",
+                    open: function() {
+                        $('#delete-game-name').html(game_list[game_key].title);
+                    },
+			    	buttons: {
+			    		"Ok": function() {
+                            game_list[game_key] = undefined;
+                            save_list[game_key] = undefined;
+                            window.localStorage.setItem("saves", save_list);
+                            window.localStorage.setItem("games", game_list);
+                            var $deleted_box = $('#g-' + id_parts[1]);
+                            if($deleted_box.next().hasClass('saves')) {
+                                $deleted_box.next().remove();
+                            }
+                            $deleted_box.remove();
+			    			$(this).dialog("close");
+			    		}, 
+			    		"Cancel": function() { 
+			    			$(this).dialog("close");
+			    		} 
+			    	}
+			    });
+                return false;
+            });
+
+            // delete a save file
+            $('.save.option-delete-image').live('click',function(){
+                var id = this.id;
+                var id_parts = id.split('-');
+                var game = decodeURIFromId(id_parts[1]);
+                var save_filename = decodeURIFromId(id_parts[2]);                
+                var save_list = window.localStorage.getItem("saves");
+                var game_list = window.localStorage.getItem("games");
+
+	    		$('#delete-save-dialog').dialog({
+	    			autoOpen: true,
+		    		width: 500,
+                    modal: true,
+                    title: "Edit story",
+                    open: function() {
+                        $('#delete-save-name').html(save_filename);
+                        $('#delete-save-game').html(game_list[game].title);
+                    },
+			    	buttons: {
+			    		"Ok": function() {
+                            save_list[game][save_filename] = undefined;
+                            window.localStorage.setItem("saves", save_list);
+                            var $deleted_box = $('#s-' + id_parts[1] + "-" + id_parts[2]);
+                            if($deleted_box.parent().children().size() == 1) {
+                                $deleted_box.parent().parent().toggle();
+                            }
+                            $deleted_box.remove();
+
+			    			$(this).dialog("close");
+			    		}, 
+			    		"Cancel": function() { 
+			    			$(this).dialog("close");
+			    		} 
+			    	}
+			    });
+                return false;
+            });
+
+            // delete a save file
+            /*$('.save.option-download-image').live('click',function(){
+                var id = this.id;
+                var id_parts = id.split('-');
+                var game = decodeURIFromId(id_parts[1]);
+                var save_filename = decodeURIFromId(id_parts[2]);                
+                var save_list = window.localStorage.getItem("saves");
+                var game_list = window.localStorage.getItem("games");
+
+                console.log("data:base64," + game_list[game]["data"]);
+                return false;
+            });*/
+
+            // handle file upload
+            $("#file-upload").change(function () {
+                var reader = new FileReader();
+                var file_obj = $("#file-upload").get(0).files[0];
+                reader.onload = function(evt) {
+                    var data = evt.target.result;
+                    var storyBytes = [];
+                    for (var i = 0; i < data.length; i++)
+                      storyBytes.push(data.charCodeAt(i));
+                    var storyString = file.base64_encode(storyBytes);
+                    var timestamp = (new Date()).getTime();
+                    var url = timestamp + '/' + file_obj.name;
+
+                    // add game, launch game, clean up dialog, add game to list
+                    file.add_to_library(url, storyString, true);
+                    window.open('parchment.html?story=' + encodeURIComponent(url));
+                    $('#upload-game-dialog').dialog('close');
+                    chrome.extension.sendRequest({"url":url}, function(response) { });
+                };
+                reader.onload = function(evt) {
+                    console.log(evt.target.result);
+                };
+                reader.readAsDataURL(file_obj);
+            });
+
+            chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+                $(".game-table tbody").append(gameUI(request.url));
+                $(".game-table").trigger("update");
+                sendResponse({});
+            });
+        });
+    </script>
+</head>
+<body style="width:800px; margin-left: auto; margin-right: auto;">
+	<div id="about">
+        <h1>Zedt Interactive Fiction</h1>
+        <div class="game-row" id="row-1"></div>
+	</div>
+
+<div class="instructions">
+<em>To start a new game, click on a game's play button, on the left.</em><br />
+<em>To see your save files for each game, click on a row.</em><br /><br />
+<em>To add new games, visit the <a href="http://ifarchive.org/indexes/if-archiveXgamesXzcode.html">Interactive Fiction Archive</a> (or any other website that hosts z-code files) and right-click on any game with the extension "z5", "z8", or "zblorb".</em><br /><br />
+<em>Alternatively, choose one of the options below:</em><br />
+</div>
+
+<div>
+<input type="button" onclick="javascript:$('#upload-game-dialog').dialog('open');" value="Upload a game" / >
+<input type="button" onclick="javascript:$('#add-game-url-dialog').dialog('open');" value="Add a game by URL" / >
+</div>
+
+<div id="credits">
+<a href="javascript:$('#credits-dialog').dialog('open');">Credits</a>
+</div>
+
+<div id="credits-dialog">
+    <a href="" style="position: absolute; font-size:10%;">&nbsp;</a>
+    <div>This app made possible by the free, open source <a href="http://parchment.googlecode.com">Parchment</a> interpreter for Interactive Fiction.</div>
+    <div>Icons provided by the <a href="http://www.famfamfam.com/lab/icons/silk/">Silk</a> image set. </div>
+    <div>App icon based on <a href="http://www.public-domain-photos.com/free-cliparts/education/books/open_book_nae_02-2597.htm">this</a> freely available clipart.</div>
+    <div>Thanks, guys!</div>
+</div>
+
+<div id="edit-dialog">
+    <table>
+      <tr>
+        <td>URL: </td>
+        <td><input type="text" id="game-edit-url" size="40" disabled="disabled" /></td>
+      </tr>
+      <tr>
+        <td>Title: </td>
+        <td><input type="text" id="game-edit-title" size="40" /></td>
+      </tr>
+      <tr>
+        <td>Author: </td>
+        <td><input type="text" id="game-edit-author" size="40" /></td>
+      </tr>
+    </table>
+</div>
+
+<div id="delete-save-dialog">
+Really delete save file <span id="delete-save-name"></span> for game <span id="delete-save-game"></span>?
+</div>
+
+<div id="delete-game-dialog">
+Really delete <span id="delete-game-name"></span> and all associated save files?
+</div>
+
+<div id="upload-game-dialog">
+<div class="instructions">Upload a z-code file directly from your computer.</div>
+<div class="input"><input id="file-upload" type="file" size="60"></div>
+</div>
+
+<div id="add-game-url-dialog">
+<div class="instructions">
+Enter the URL of a z-code game in the box below and click "Play".
+</div>
+<input type="text" id="new-story-url" title="Enter the full URL of a zcode file, e.g. 'http://www.ifarchive.org/if-archive/games/zcode/photopia.z5'" />
+<input type="button" value="Play" onclick="window.open('parchment.html?story=' + encodeURIComponent($('#new-story-url').val()));" />
+</div>
+
+</body>
+</html>

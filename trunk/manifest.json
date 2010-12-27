@@ -1,0 +1,22 @@
+{
+  "name": "Zedt",
+  "description": "Play classic text adventures and modern interactive fiction right in your web browser",
+  "version": "1.0",
+  "app": {
+    "launch": {
+      "local_path": "home.html"
+    }
+  },
+  "background_page": "background.html",
+  "icons": {
+    "16": "icon_16.png",
+    "128": "icon_128.png"
+  },
+  "permissions": [
+    "*://*/*.z5",
+    "*://*/*.z8",
+    "*://*/*.zblorb",
+    "contextMenus",
+    "unlimitedStorage"
+  ]
+}

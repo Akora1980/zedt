@@ -186,7 +186,7 @@ parchment.lib.ZUI = Object.subClass({
 
       $("body").append("<div id='zui-save-dialog'><input type='text' maxlength='16' id='zui-save-name' /></div>");
 
-      var story_url = file.mirror_ifarchive_url(decodeURIComponent(this.library.url));
+      var story_url = decodeURIComponent(this.library.url);
       var save_list = window.localStorage.getItem("saves") || {};
       save_list[story_url] = save_list[story_url] || {};
 
@@ -260,7 +260,7 @@ onRestore: function(callback)
 	// available; if none are available, we should return null.
 
 	var b64data = null;
-    var story_url = file.mirror_ifarchive_url(decodeURIComponent(this.library.url));
+    var story_url = decodeURIComponent(this.library.url);
     var save_list = window.localStorage.getItem("saves") || {};
     save_list[story_url] = save_list[story_url] || {};
 

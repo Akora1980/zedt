@@ -148,16 +148,21 @@ function download_to_array( url, callback )
 	var options;
 
     var game_list = window.localStorage.getItem("games") || {};
+
     // if there is not a copy of the game in the local cache, fetch the game
-    if(!game_list[url] || !game_list[url]["data"]) {
+    if(game_list[url] == undefined || game_list[url]["data"] == undefined || game_list[url]["data"] == "") {
         xmlhttp = new XMLHttpRequest();
         xmlhttp.overrideMimeType('text/plain; charset=x-user-defined');
-        xmlhttp.open("GET",url,false);
+
+        // when we do the fetch, actually get the file from the real URL, not the mirror -- using the mirror gives an error
+        xmlhttp.open("GET", url, false);
         xmlhttp.send();
+console.log("fetched, about to convert");
         var story_data = text_to_array( xmlhttp.responseText );
         b64_data = base64_encode(story_data);
-        add_to_library(url, b64_data);
-
+console.log("converted, about to save");
+        add_to_library(url, b64_data, false);
+console.log("finished loading");
         callback( story_data );
     } else {
         // the game is in local storage, so let's use that
@@ -170,7 +175,6 @@ function download_to_array( url, callback )
 
 function add_to_library(url, b64_data, is_local, callback) {
     var is_local = is_local || false; // is the file a local upload?  default no
-    url = mirror_ifarchive_url(url);
 
     var game_list = window.localStorage.getItem("games") || {};
 
@@ -231,7 +235,7 @@ function add_to_library(url, b64_data, is_local, callback) {
     }
 }       
 
-
+// TODO: the storage of game files should be handled here, not in add_to_library
 function store_story(url, b64_data, callback) {
     
 }
@@ -244,8 +248,6 @@ function store_story(url, b64_data, callback) {
 function mirror_ifarchive_url(url) {
     var urldomain_regex = /^(file:|([\w-]+:)?\/\/[^\/?#]+)/;
     var story_domain = urldomain_regex.exec(url) ? (urldomain_regex.exec(url)[0] + "/") : urldomain_regex.exec(location)[0];
-
-console.log(url);
 
     var if_mirror_hosts = [
         "http://www.ifarchive.org/",
@@ -267,7 +269,6 @@ console.log(url);
 
     // if the URL starts with any mirror host
     if($.inArray(story_domain, if_mirror_hosts) > -1) {
-        console.log("replacing host");
         url = url.replace(story_domain, "http://mirror.ifarchive.org/");
     }
     // there are other mirrors, but they have been commented out because they do not conform to the URL patterns of the rest nor map onto mirror.ifarchive.org

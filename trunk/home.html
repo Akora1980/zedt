@@ -116,23 +116,28 @@
             $(".game-table").tablesorter({widgets:["sortSaves"]});
 
             // play a game by clicking the play button
-			$('.play-button-box').click(function(){
+			$('.game-box').live("click", function(){
                 window.open("parchment.html?story=" + decodeURIFromId(this.id.split('-')[1]));
                 return false;
 			});
 
             // show/hide saved games when the game row is clicked
-			$('.game-box').live('click', function(){
+			$('.play-button-box').live('click', function(){
                 // if a save list is in place but hidden, show it; otherwise, make a new one
-                var $save_area = $(this).next('.saves');
+                var $save_area = $(this).parent().next('.saves');
                 $('.saves').remove();
+                $('.play-button-box').css({"background-image":"url('images/control_play.png')"});
+                $('.play-button-box').removeClass('pointing-down');
                 if($save_area.size() == 0) {
-                    $save_area = $(saveUI(decodeURIFromId(this.id.split('-')[1])));
-                    $(this).after($save_area);
+                    $save_area = $(saveUI(decodeURIFromId($(this).parent()[0].id.split('-')[1])));
+                    $(this).parent().after($save_area);
                     if($save_area.children('td').first().children().size() != 0) {
                         $save_area.toggle();
+                        $(this).css({"background-image":"url('images/control_down.png')"});
+                        $('.play-button-box').addClass('pointing-down');
                     }
                 }
+                return false;
 			});
 
             // load a save game on click
@@ -311,15 +316,18 @@
     </script>
 </head>
 <body style="width:800px; margin-left: auto; margin-right: auto;">
-	<div id="about">
-        <h1>Zedt Interactive Fiction</h1>
-        <div class="game-row" id="row-1"></div>
-	</div>
+
+<div id="all-visible">
+
+<div id="about">
+    <h1 style="font-family:courier;">Zedt Interactive Fiction</h1>
+    <div class="game-row" id="row-1"></div>
+</div>
 
 <div class="instructions">
 <em>To start a new game, click on a game's play button, on the left.</em><br />
 <em>To see your save files for each game, click on a row.</em><br /><br />
-<em>To add new games, visit the <a href="http://ifarchive.org/indexes/if-archiveXgamesXzcode.html">Interactive Fiction Archive</a> (or any other website that hosts z-code files) and right-click on any game with the extension "z5", "z8", or "zblorb".</em><br /><br />
+<em>To add new games, visit the <a href="http://ifarchive.org/indexes/if-archiveXgamesXzcode.html" target="_blank">Interactive Fiction Archive</a> (or any other website that hosts z-code files) and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".</em><br /><br />
 <em>Alternatively, choose one of the options below:</em><br />
 </div>
 
@@ -329,13 +337,18 @@
 </div>
 
 <div id="credits">
-<a href="javascript:$('#credits-dialog').dialog('open');">Credits</a>
+<a href="javascript:$('#credits-dialog').dialog('open');">Credits/License</a>
 </div>
+
+</div>
+
 
 <div id="credits-dialog">
     <a href="" style="position: absolute; font-size:10%;">&nbsp;</a>
+    <div>Zedt is available under the <a href="LICENCE">GNU General Public License</a>, which means you may share and edit it as long as your redistributions are also available under the GPL.</div>
+    <div>You can get the source code at the <a href="http://code.google.com/p/zedt/source/browse/">Google Code project page</a>, or by pressing Ctrl+U on any page.</div>
     <div>This app made possible by the free, open source <a href="http://parchment.googlecode.com">Parchment</a> interpreter for Interactive Fiction.</div>
-    <div>Icons provided by the <a href="http://www.famfamfam.com/lab/icons/silk/">Silk</a> image set. </div>
+    <div>Icons are part of the free <a href="http://www.famfamfam.com/lab/icons/silk/">Silk image set</a> by Mark James. <img src="images/heart_add.png" /></div>
     <div>App icon based on <a href="http://www.public-domain-photos.com/free-cliparts/education/books/open_book_nae_02-2597.htm">this</a> freely available clipart.</div>
     <div>Thanks, guys!</div>
 </div>
@@ -375,7 +388,7 @@ Really delete <span id="delete-game-name"></span> and all associated save files?
 Enter the URL of a z-code game in the box below and click "Play".
 </div>
 <input type="text" id="new-story-url" title="Enter the full URL of a zcode file, e.g. 'http://www.ifarchive.org/if-archive/games/zcode/photopia.z5'" />
-<input type="button" value="Play" onclick="window.open('parchment.html?story=' + encodeURIComponent($('#new-story-url').val()));" />
+<input type="button" value="Play" onclick="window.open('parchment.html?story=' + encodeURIComponent($('#new-story-url').val())); $('#add-game-url-dialog').dialog('close');" />
 </div>
 
 </body>

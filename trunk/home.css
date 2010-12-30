@@ -2,6 +2,17 @@ body {
 
 }
 
+#all-visible {
+  padding: 20px;
+  margin: 10px;
+  background-color: #eef;
+  -webkit-border-radius: 15px;
+  border-top: thin solid #ddf;
+  border-left: thin solid #ddf;
+  border-right: thin solid #ccf;
+  border-bottom: thin solid #aaf;
+}
+
 .game-table {
   margin-left:auto;
   margin-right:auto;
@@ -17,10 +28,11 @@ body {
   cursor: pointer;
   position: relative;
   text-align: left;
+  background-color: #DDDDFF;
 }
 
 .game-box:hover {
-  background-color: #CCCCFF;
+  background-color: #EEEEFF;
 }
 
 .game-title {
@@ -121,8 +133,4 @@ body {
   background-image:url('images/control_play.png');
   background-repeat:no-repeat;
   background-position:center; 
-}
-
-.play-button-box:hover {
-  background-image:url('images/control_play_blue.png');
 }

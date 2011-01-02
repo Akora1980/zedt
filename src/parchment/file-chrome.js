@@ -278,7 +278,6 @@ function mirror_ifarchive_url(url) {
             "ftp://ftp.funet.fi/pub/mirrors/ftp.ifarchive.org/if-archive/"
         ];
         for(i in if_mirror_paths) {
-            console.log("cheching path: " + if_mirror_paths[i]);
             if(url.indexOf(if_mirror_paths[i]) == 0) {
                 url = url.replace(if_mirror_paths[i], "http://mirror.ifarchive.org/");
                 break;

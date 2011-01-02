@@ -235,11 +235,7 @@ parchment.lib.ZUI = Object.subClass({
                   $("#zui-save-dialog").remove();
                   callback( false );
 			  } 
-		  },
-          close: function() {
-              //$("#zui-save-dialog").remove();
-              //callback( false );
-          }
+		  }
 	  });
 
 
@@ -264,12 +260,20 @@ onRestore: function(callback)
     var save_list = window.localStorage.getItem("saves") || {};
     save_list[story_url] = save_list[story_url] || {};
 
-    $("body").append("<div id='zui-restore-dialog'><select id='zui-restore-select'></select></div>");
+    $("body").append("<div id='zui-restore-dialog'><select id='zui-restore-select' multiple='multiple' style='width:100%;'></select></div>");
 
-		var this_game_saves = save_list[story_url];
-        for(save_key in this_game_saves) {
-            $("#zui-restore-select").append("<option value='" + save_key + "'>" + save_key + "</option>");
-	    }
+	var this_game_saves = save_list[story_url];
+    for(save_key in this_game_saves) {
+        $("#zui-restore-select").append("<option value='" + save_key + "'>" + save_key + "</option>");
+    }
+
+    $("#zui-restore-select option").dblclick(function() {
+        var save_name = $(this).val();
+        var b64data = this_game_saves[save_name];
+        callback( file.base64_decode(b64data) );
+	    $("#zui-restore-dialog").dialog("close");
+        $("#zui-restore-dialog").remove();
+    });
 
 	$('#zui-restore-dialog').dialog({
 	    autoOpen: true,
@@ -278,32 +282,20 @@ onRestore: function(callback)
         title: "Restore game",
         draggable: false,
         closeOnEscape: false,
-        open: function(event, ui) { $(".ui-dialog-titlebar-close", ui).hide(); },
+        open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
 		buttons: {
 			"Ok": function() {
                 var save_name = $("#zui-restore-select").val();
                 var b64data = this_game_saves[save_name];
-                if(save_name != '') {
-                    callback( file.base64_decode(b64data) );
-                    $(this).button_pressed = true;
-        		    $(this).dialog("close");
-                    $("#zui-restore-dialog").remove();
-                } else {
-                      
-                }
+                callback( file.base64_decode(b64data) );
+    		    $(this).dialog("close");
+                $("#zui-restore-dialog").remove();
 			  }, 
 			  "Cancel": function() {
-                  this.button_pressed = true;
                   callback( false );
 				  $(this).dialog("close");
 			  } 
-		  },
-          close: function() {
-              //$("#zui-restore-dialog").remove();
-              //if(this.button_pressed) { callback( false ); }
-              //return true;
-console.log(this);
-          }
+		  }
 	  });
 
 },

@@ -11,11 +11,11 @@ if(ver == null) {
     xmlhttp.overrideMimeType('text/plain; charset=x-user-defined');
 
     var preloaded_games = {
+        "stories/dreamhold.z8":{"link":"http://ifarchive.org/if-archive/games/zcode/dreamhold.z8", "title":"The Dreamhold [Tutorial game]", "author":"Andrew Plotkin"},
         "stories/curses.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/curses.z5", "title":"Curses!", "author":"Graham Nelson"},
         "stories/metamorp.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/metamorp.z5", "title":"Metamorphoses", "author":"Emily Short"},
         "stories/photopia.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/photopia.z5", "title":"Photopia", "author":"Adam Cadre"},
-        "stories/suvehnux.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/suvehnux.z5", "title":"Suveh Nux", "author":"David Fisher"},
-        "stories/dreamhold.z8":{"link":"http://ifarchive.org/if-archive/games/zcode/dreamhold.z8", "title":"The Dreamhold", "author":"Andrew Plotkin"}
+        "stories/suvehnux.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/suvehnux.z5", "title":"Suveh Nux", "author":"David Fisher"}
     };
 
     for(url in preloaded_games) {

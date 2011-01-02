@@ -1,21 +1,26 @@
 body {
-
+  background-color: #bbf;
 }
 
 #all-visible {
   padding: 20px;
   margin: 10px;
-  background-color: #eef;
+  background-color: #000044;
+  color: #fff;
   -webkit-border-radius: 15px;
-  border-top: thin solid #ddf;
-  border-left: thin solid #ddf;
-  border-right: thin solid #ccf;
-  border-bottom: thin solid #aaf;
+  font-family: courier;
+}
+
+#all-visible a {
+  color: #ff7;
+  font-weight: bold;
 }
 
 .game-table {
   margin-left:auto;
   margin-right:auto;
+  font-size: 10pt;
+  font-family: courier;
 }
 
 .game-table td {
@@ -23,16 +28,16 @@ body {
 }
 
 .game-box {
-  margin: 5px;
-  padding: 3px;
+  margin: 1px;
+  padding: 1px;
   cursor: pointer;
   position: relative;
   text-align: left;
-  background-color: #DDDDFF;
+  background-color: #eef;
 }
 
 .game-box:hover {
-  background-color: #EEEEFF;
+  background-color: #ddf;
 }
 
 .game-title {

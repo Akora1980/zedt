@@ -157,12 +157,9 @@ function download_to_array( url, callback )
         // when we do the fetch, actually get the file from the real URL, not the mirror -- using the mirror gives an error
         xmlhttp.open("GET", url, false);
         xmlhttp.send();
-console.log("fetched, about to convert");
         var story_data = text_to_array( xmlhttp.responseText );
         b64_data = base64_encode(story_data);
-console.log("converted, about to save");
         add_to_library(url, b64_data, false);
-console.log("finished loading");
         callback( story_data );
     } else {
         // the game is in local storage, so let's use that
@@ -188,6 +185,7 @@ function add_to_library(url, b64_data, is_local, callback) {
         game_list[url]["local"] = is_local;
 
         // let the library tab know we have a new game
+        console.log("sending request");
         chrome.extension.sendRequest({"url":url}, function(response) { });
     }
 

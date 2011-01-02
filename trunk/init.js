@@ -15,7 +15,8 @@ if(ver == null) {
         "stories/curses.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/curses.z5", "title":"Curses!", "author":"Graham Nelson"},
         "stories/metamorp.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/metamorp.z5", "title":"Metamorphoses", "author":"Emily Short"},
         "stories/photopia.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/photopia.z5", "title":"Photopia", "author":"Adam Cadre"},
-        "stories/suvehnux.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/suvehnux.z5", "title":"Suveh Nux", "author":"David Fisher"}
+        "stories/suvehnux.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/suvehnux.z5", "title":"Suveh Nux", "author":"David Fisher"},
+        "stories/Advent.z5":{"link":"http://ifarchive.org/if-archive/games/zcode/Advent.z5", "title":"Adventure", "author":"Will Crowther &amp; Don Woods"}
     };
 
     for(url in preloaded_games) {

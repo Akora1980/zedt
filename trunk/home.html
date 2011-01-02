@@ -26,7 +26,7 @@
                     save_menu += "<strong>" + save_filename + "</strong><br/ >";
                     save_menu += "<div class='save option-bar'>";
                     //save_menu += "<div class='save option-download'><img class='save option-download-image' id='sd-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "' src='images/page_white_put.png' / ></div>";
-                    save_menu += "<div class='save option-delete'><img class='save option-delete-image' id='sd-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "' src='images/delete.png' / ></div>";
+                    save_menu += "<div class='save option-delete'><img class='save option-delete-image' id='sd-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "' src='images/delete.png' title='Delete' / ></div>";
                     save_menu += "</div></div>";
                 }
                 save_menu += "</td></tr>";
@@ -39,13 +39,13 @@
             var game_menu = "";
             game = game ? game : {};
             game_menu += "<tr class='game-box' id='g-" + encodeURIForId(key) + "'>";
-            game_menu += "<td class='play-button-box' id='play-" + encodeURIForId(key) + "'></td>";
+            game_menu += "<td class='play-button-box' id='play-" + encodeURIForId(key) + "' title='Show/Hide Saves'></td>";
             game_menu += "<td class='game-title'>" + (game.title?game.title:key.split("/").pop()) + "</td>"
             game_menu += "<td class='game-author'>"+ (game.author?game.author:"") + "</td>";
 
             game_menu += "<td class='game option-bar'>";
-            game_menu += "<div class='game option-edit'><img class='game option-edit-image' id='ge-" + encodeURIForId(key) + "' src='images/edit.png' / ></div>";
-            game_menu += "<div class='game option-delete'><img class='game option-delete-image' id='gd-" + encodeURIForId(key) + "' src='images/delete.png' / ></div>";
+            game_menu += "<div class='game option-edit'><img class='game option-edit-image' id='ge-" + encodeURIForId(key) + "' src='images/edit.png' title='Edit' / ></div>";
+            game_menu += "<div class='game option-delete'><img class='game option-delete-image' id='gd-" + encodeURIForId(key) + "' src='images/delete.png' title='Delete' / ></div>";
             game_menu += "</td>"
             game_menu += "</tr>";
 
@@ -83,10 +83,10 @@
             // create table of games and add headers
             game_menu += "<table border='0' cellpadding='5' cellspacing='1' class='game-table tablesorter'>";
             game_menu += "<thead><tr class='game-header'>";
-            game_menu += "<td class='game-play-header' width='1'> </td>";
+            game_menu += "<th class='game-play-header' width='1'> </th>";
             game_menu += "<th class='game-title-header'>Title</th>";
             game_menu += "<th class='game-author-header'>Author</th>";
-            game_menu += "<td class='game-option-header'></td>";
+            game_menu += "<th class='game-option-header'></th>";
             game_menu += "</tr></thead><tbody>";
 
             // provide initial sort of keys
@@ -113,7 +113,17 @@
             current_row.innerHTML = game_menu;
 
             // make game table sortable
-            $(".game-table").tablesorter({widgets:["sortSaves"]});
+            $(".game-table").tablesorter({
+                widgets:["sortSaves", "zebra"],
+                headers: {
+                    0: {
+                        sorter: false 
+                    }, 
+                    3: {
+                        sorter: false 
+                    } 
+                }
+            });
 
             // play a game by clicking the play button
 			$('.game-box').live("click", function(){
@@ -295,21 +305,22 @@
                     var timestamp = (new Date()).getTime();
                     var url = timestamp + '/' + file_obj.name;
 
+                    // message passing doesn't work within the same page, so we must manually add the new menu item
+                    $(".game-table tbody").append(gameUI(url));
+                    $(".game-table").trigger("update");
+
                     // add game, launch game, clean up dialog, add game to list
                     file.add_to_library(url, storyString, true);
                     window.open('parchment.html?story=' + encodeURIComponent(url));
                     $('#upload-game-dialog').dialog('close');
-                    chrome.extension.sendRequest({"url":url}, function(response) { });
                 };
-                reader.onload = function(evt) {
-                    console.log(evt.target.result);
-                };
-                reader.readAsDataURL(file_obj);
+                reader.readAsBinaryString(file_obj);
             });
 
             chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
                 $(".game-table tbody").append(gameUI(request.url));
                 $(".game-table").trigger("update");
+                console.log("got request", request);
                 sendResponse({});
             });
         });
@@ -320,15 +331,15 @@
 <div id="all-visible">
 
 <div id="about">
-    <h1 style="font-family:courier;">Zedt Interactive Fiction</h1>
+    <h1>> <input type="text" style="font-family:courier; width:370pt; background-color: transparent; font-size: 25pt; font-weight: bold; border:0; color: #fff;" value="Zedt Interactive Fiction" /></h1>
     <div class="game-row" id="row-1"></div>
 </div>
 
-<div class="instructions">
-<em>To start a new game, click on a game's play button, on the left.</em><br />
-<em>To see your save files for each game, click on a row.</em><br /><br />
-<em>To add new games, visit the <a href="http://ifarchive.org/indexes/if-archiveXgamesXzcode.html" target="_blank">Interactive Fiction Archive</a> (or any other website that hosts z-code files) and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".</em><br /><br />
-<em>Alternatively, choose one of the options below:</em><br />
+<div class="instructions" style="font-weight: bold;">
+To start a new game, click on the title.<br />
+To see your save files for a game, click the arrow next to the title.<br /><br />
+To add new games, visit the <a href="http://ifarchive.org/indexes/if-archiveXgamesXzcode.html" target="_blank">Interactive Fiction Archive</a> (or any other website that hosts z-code files) and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".<br />(At present, z6 is not supported.)<br /><br />
+Alternatively, choose one of the options below:<br />
 </div>
 
 <div>
@@ -345,10 +356,10 @@
 
 <div id="credits-dialog">
     <a href="" style="position: absolute; font-size:10%;">&nbsp;</a>
-    <div>Zedt is available under the <a href="LICENCE">GNU General Public License</a>, which means you may share and edit it as long as your redistributions are also available under the GPL.</div>
+    <div>Zedt is available under the <a href="LICENCE">GNU General Public License Version 3</a>, which means you may share and edit it as long as your redistributions are also available under the GPL.</div>
     <div>You can get the source code at the <a href="http://code.google.com/p/zedt/source/browse/">Google Code project page</a>, or by pressing Ctrl+U on any page.</div>
     <div>This app made possible by the free, open source <a href="http://parchment.googlecode.com">Parchment</a> interpreter for Interactive Fiction.</div>
-    <div>Icons are part of the free <a href="http://www.famfamfam.com/lab/icons/silk/">Silk image set</a> by Mark James. <img src="images/heart_add.png" /></div>
+    <div>Icons are part of the free <a href="http://www.famfamfam.com/lab/icons/silk/">Silk image set</a> by Mark James.</div>
     <div>App icon based on <a href="http://www.public-domain-photos.com/free-cliparts/education/books/open_book_nae_02-2597.htm">this</a> freely available clipart.</div>
     <div>Thanks, guys!</div>
 </div>
@@ -380,7 +391,8 @@ Really delete <span id="delete-game-name"></span> and all associated save files?
 
 <div id="upload-game-dialog">
 <div class="instructions">Upload a z-code file directly from your computer.</div>
-<div class="input"><input id="file-upload" type="file" size="60"></div>
+<div class="instructions"><input id="file-upload" type="file" size="60"></div>
+<div style="font-size: 70%;">At present, it is <strong>strongly recommended</strong> that you use only story files that are hosted online, rather than from your own computer, since there is limit on local storage.  Future versions of Zedt should eliminate this limitation.</div>
 </div>
 
 <div id="add-game-url-dialog">

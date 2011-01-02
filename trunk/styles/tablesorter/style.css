@@ -1,7 +1,7 @@
 /* tables */
 table.tablesorter {
-	font-family:arial;
-	background-color: #CDCDCD;
+	font-family: courier;
+	background-color: #fff;
 	margin:10px 0pt 15px;
 	width: 100%;
 }
@@ -15,10 +15,14 @@ table.tablesorter thead tr .header {
 	background-repeat: no-repeat;
 	background-position: center right;
 	cursor: pointer;
+    color: #000;
 }
 table.tablesorter tbody td {
 	color: #3D3D3D;
-	padding: 4px;
+	padding-right: 4px;
+	padding-left: 4px;
+	padding-top: 1px;
+	padding-bottom: 1px;
 	vertical-align: middle;
 }
 table.tablesorter tbody tr.odd td {

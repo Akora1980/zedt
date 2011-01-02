@@ -60,6 +60,9 @@
             $('#credits-dialog').dialog({ autoOpen: false, width: 500, modal: true, draggable: false, resizable: false });
             $('#upload-game-dialog').dialog({ autoOpen: false, width: 500, modal: true, draggable: false, resizable: false });
             $('#add-game-url-dialog').dialog({ autoOpen: false, width: 500, modal: true, draggable: false, resizable: false });
+            $('#first-time-dialog').dialog({ autoOpen: false, width: 700, modal: true, draggable: false, resizable: false, title: "Welcome to Zedt!",
+                buttons: {"Ok" : function() { $(this).dialog("close"); }}
+            });
 
             $.tablesorter.addWidget({ 
                 // give the widget a id 
@@ -279,7 +282,7 @@
                 return false;
             });
 
-            // delete a save file
+            // donwload a save file
             /*$('.save.option-download-image').live('click',function(){
                 var id = this.id;
                 var id_parts = id.split('-');
@@ -320,9 +323,14 @@
             chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
                 $(".game-table tbody").append(gameUI(request.url));
                 $(".game-table").trigger("update");
-                console.log("got request", request);
                 sendResponse({});
             });
+
+            // show the initial popup
+            if(!localStorage.getItem("main_screen_viewed")) {
+                $('#first-time-dialog').dialog("open");
+                localStorage.setItem("main_screen_viewed", true)
+            }
         });
     </script>
 </head>
@@ -404,5 +412,8 @@ Enter the URL of a z-code game in the box below and click "Play".
 <input type="button" value="Play" onclick="window.open('parchment.html?story=' + encodeURIComponent($('#new-story-url').val())); $('#add-game-url-dialog').dialog('close');" />
 </div>
 
+<div id="first-time-dialog">
+<div>If this is your first time playing interactive fiction (alternatvely known as "text adventures", if you were tech-savvy in the eighties), we highly recommend you start out by playing <strong><i>The Dreamhold</i></strong> as an introduction.  Once you've gotten the basics of how to play, you can move on to the other games included with Zedt, or download more games from the Interactive Fiction Archive.</div>
+</div>
 </body>
 </html>

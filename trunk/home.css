@@ -33,15 +33,21 @@ body {
   cursor: pointer;
   position: relative;
   text-align: left;
-  background-color: #eef;
 }
 
+.game-box.even {
+  background-color: #aab;
+}
+
+.game-box.odd {
+  background-color: #88a;
+}
 .game-box:hover {
-  background-color: #ddf;
+  background-color: #dde;
 }
 
 .game-title {
-  font-style: italic;
+
 }
 
 .game-title-header {

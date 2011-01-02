@@ -159,7 +159,7 @@ function download_to_array( url, callback )
         xmlhttp.send();
         var story_data = text_to_array( xmlhttp.responseText );
         b64_data = base64_encode(story_data);
-        add_to_library(url, b64_data, false);
+        add_to_library({"link":url}, b64_data, false);
         callback( story_data );
     } else {
         // the game is in local storage, so let's use that
@@ -170,24 +170,25 @@ function download_to_array( url, callback )
 }
 
 
-function add_to_library(url, b64_data, is_local, callback) {
+function add_to_library(metadata, b64_data, is_local, callback) {
     var is_local = is_local || false; // is the file a local upload?  default no
+    var url = metadata.link;
 
     var game_list = window.localStorage.getItem("games") || {};
 
     // if this url is not in the library, add it
     if(!game_list[url]) {
         game_list[url] = {};
-        game_list[url]["title"] = url.split("/").pop();
-        game_list[url]["author"] = "";
-        game_list[url]["genre"] = "";
-        game_list[url]["rating"] = -1;
         game_list[url]["local"] = is_local;
 
         // let the library tab know we have a new game
-        console.log("sending request");
         chrome.extension.sendRequest({"url":url}, function(response) { });
     }
+
+    game_list[url]["title"] = metadata.title || url.split("/").pop();
+    game_list[url]["author"] = metadata.author || "";
+    game_list[url]["genre"] = metadata.genre || "";
+    game_list[url]["rating"] = metadata.rating || -1;
 
     // add game data to cache
     game_list[url]["data"] = b64_data;

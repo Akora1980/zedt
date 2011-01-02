@@ -310,7 +310,7 @@
                     $(".game-table").trigger("update");
 
                     // add game, launch game, clean up dialog, add game to list
-                    file.add_to_library(url, storyString, true);
+                    file.add_to_library({"link":url}, storyString, true);
                     window.open('parchment.html?story=' + encodeURIComponent(url));
                     $('#upload-game-dialog').dialog('close');
                 };
@@ -336,8 +336,9 @@
 </div>
 
 <div class="instructions" style="font-weight: bold;">
-To start a new game, click on the title.<br />
-To see your save files for a game, click the arrow next to the title.<br /><br />
+<div>To start a new game, click on the title.</div>
+<div>To see your save files for a game, click the arrow next to the title.</div><br />
+
 To add new games, visit the <a href="http://ifarchive.org/indexes/if-archiveXgamesXzcode.html" target="_blank">Interactive Fiction Archive</a> (or any other website that hosts z-code files) and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".<br />(At present, z6 is not supported.)<br /><br />
 Alternatively, choose one of the options below:<br />
 </div>
@@ -356,7 +357,7 @@ Alternatively, choose one of the options below:<br />
 
 <div id="credits-dialog">
     <a href="" style="position: absolute; font-size:10%;">&nbsp;</a>
-    <div>Zedt is available under the <a href="LICENCE">GNU General Public License Version 3</a>, which means you may share and edit it as long as your redistributions are also available under the GPL.</div>
+    <div>Zedt is available under the <a href="LICENCE.txt" target="_blank">GNU General Public License Version 2</a>, which means you may share and edit it as long as your redistributions are also available under the GPL.</div>
     <div>You can get the source code at the <a href="http://code.google.com/p/zedt/source/browse/">Google Code project page</a>, or by pressing Ctrl+U on any page.</div>
     <div>This app made possible by the free, open source <a href="http://parchment.googlecode.com">Parchment</a> interpreter for Interactive Fiction.</div>
     <div>Icons are part of the free <a href="http://www.famfamfam.com/lab/icons/silk/">Silk image set</a> by Mark James.</div>
@@ -392,7 +393,7 @@ Really delete <span id="delete-game-name"></span> and all associated save files?
 <div id="upload-game-dialog">
 <div class="instructions">Upload a z-code file directly from your computer.</div>
 <div class="instructions"><input id="file-upload" type="file" size="60"></div>
-<div style="font-size: 70%;">At present, it is <strong>strongly recommended</strong> that you use only story files that are hosted online, rather than from your own computer, since there is limit on local storage.  Future versions of Zedt should eliminate this limitation.</div>
+<div style="font-size: 70%;">At present, it is strongly recommended that you use this feature sparingly, since there is limit on local storage.  If possible, use game files hosted online, e.g., at the IF Archive.<br /><br />Future versions of Zedt should eliminate this limitation.</div>
 </div>
 
 <div id="add-game-url-dialog">

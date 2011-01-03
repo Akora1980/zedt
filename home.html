@@ -35,10 +35,18 @@
         }
 
 
-        function gameUI(key, game) {
+        function gameUI(key, game, is_even) {
             var game_menu = "";
             game = game ? game : {};
-            game_menu += "<tr class='game-box' id='g-" + encodeURIForId(key) + "'>";
+            game_menu += "<tr class='game-box";
+            if(is_even != undefined) {
+                if(is_even) {
+                    game_menu += " even";
+                } else {
+                    game_menu += " odd";
+                }
+            }
+            game_menu += "' id='g-" + encodeURIForId(key) + "'>";
             game_menu += "<td class='play-button-box' id='play-" + encodeURIForId(key) + "' title='Show/Hide Saves'></td>";
             game_menu += "<td class='game-title'>" + (game.title?game.title:key.split("/").pop()) + "</td>"
             game_menu += "<td class='game-author'>"+ (game.author?game.author:"") + "</td>";
@@ -136,7 +144,7 @@
 
             // show/hide saved games when the game row is clicked
 			$('.play-button-box').live('click', function(){
-                // if a save list is in place but hidden, show it; otherwise, make a new one
+                // destory all save lists on the page, and then show a list if it wasn't there already
                 var $save_area = $(this).parent().next('.saves');
                 $('.saves').remove();
                 $('.play-button-box').css({"background-image":"url('images/control_play.png')"});
@@ -144,11 +152,13 @@
                 if($save_area.size() == 0) {
                     $save_area = $(saveUI(decodeURIFromId($(this).parent()[0].id.split('-')[1])));
                     $(this).parent().after($save_area);
-                    if($save_area.children('td').first().children().size() != 0) {
-                        $save_area.toggle();
-                        $(this).css({"background-image":"url('images/control_down.png')"});
-                        $('.play-button-box').addClass('pointing-down');
+                    if($save_area.children('td').first().children().size() == 0) {
+                        $save_area.children('td').css({"padding":"5px 20px"}).html("No save files");
                     }
+                    $save_area.addClass($(this).parent().hasClass("even")?"even":"odd")
+                    $save_area.show();
+                    $(this).css({"background-image":"url('images/control_down.png')"});
+                    $('.play-button-box').addClass('pointing-down');
                 }
                 return false;
 			});
@@ -309,7 +319,8 @@
                     var url = timestamp + '/' + file_obj.name;
 
                     // message passing doesn't work within the same page, so we must manually add the new menu item
-                    $(".game-table tbody").append(gameUI(url));
+                    var is_even = ($(".game-table tbody").children("tr.game-box").size() % 2 == 1);
+                    $(".game-table tbody").append(gameUI(url, {}, is_even));
                     $(".game-table").trigger("update");
 
                     // add game, launch game, clean up dialog, add game to list
@@ -321,7 +332,8 @@
             });
 
             chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-                $(".game-table tbody").append(gameUI(request.url));
+                var is_even = ($(".game-table tbody").children("tr.game-box").size() % 2 == 1);
+                $(".game-table tbody").append(gameUI(request.url, {}, is_even));
                 $(".game-table").trigger("update");
                 sendResponse({});
             });
@@ -347,7 +359,7 @@
 <div>To start a new game, click on the title.</div>
 <div>To see your save files for a game, click the arrow next to the title.</div><br />
 
-To add new games, visit the <a href="http://ifarchive.org/indexes/if-archiveXgamesXzcode.html" target="_blank">Interactive Fiction Archive</a> (or any other website that hosts z-code files) and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".<br />(At present, z6 is not supported.)<br /><br />
+To add new games, visit the <a href="http://ifarchive.org/indexes/if-archiveXgamesXzcode.html" target="_blank">Interactive Fiction Archive</a>, <a href="http://www.wurb.com/if/platform/1" target="_blank">Baf's Guide</a>, the <a href="http://ifdb.tads.org/" target="_blank">IF Database</a>, or any other website that hosts z-code files, and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".<br />(At present, z6 is not supported.)<br /><br />
 Alternatively, choose one of the options below:<br />
 </div>
 
@@ -369,7 +381,7 @@ Alternatively, choose one of the options below:<br />
     <div>You can get the source code at the <a href="http://code.google.com/p/zedt/source/browse/">Google Code project page</a>, or by pressing Ctrl+U on any page.</div>
     <div>This app made possible by the free, open source <a href="http://parchment.googlecode.com">Parchment</a> interpreter for Interactive Fiction.</div>
     <div>Icons are part of the free <a href="http://www.famfamfam.com/lab/icons/silk/">Silk image set</a> by Mark James.</div>
-    <div>App icon based on <a href="http://www.public-domain-photos.com/free-cliparts/education/books/open_book_nae_02-2597.htm">this</a> freely available clipart.</div>
+    <div>App icon based on <a href="http://www.clker.com/clipart-open-book.html">this</a> freely available clipart.</div>
     <div>Thanks, guys!</div>
 </div>
 

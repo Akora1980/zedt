@@ -35,15 +35,20 @@ body {
   text-align: left;
 }
 
-.game-box.even {
+tr.even {
   background-color: #aab;
 }
 
-.game-box.odd {
+.game-box:hover.even {
+  background-color: #bbc;
+}
+
+tr.odd {
   background-color: #88a;
 }
-.game-box:hover {
-  background-color: #dde;
+
+.game-box:hover.odd {
+  background-color: #99b;
 }
 
 .game-title {
@@ -115,16 +120,25 @@ body {
   height: 50px;
   margin: 5px;
   padding: 3px;
-  background-color: #AAAAFF;
+  background-color: #77e;
   cursor: pointer;
   float: left;
   -webkit-border-radius: 5px;
+  border-top: 1px #555 solid;
+  border-right: 1px #333 solid;
+  border-bottom: 1px #333 solid;
+  border-left: 1px #555 solid;
   position: relative;
   overflow: hidden;
+  text-align: center;
 }
 
 .save-box:hover {
   background-color: #4444FF;
+}
+
+.saves td {
+  text-align: left;
 }
 
 .saves {

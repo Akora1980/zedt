@@ -154,8 +154,9 @@ function download_to_array( url, callback )
         xmlhttp = new XMLHttpRequest();
         xmlhttp.overrideMimeType('text/plain; charset=x-user-defined');
 
-        // when we do the fetch, actually get the file from the real URL, not the mirror -- using the mirror gives an error
-        xmlhttp.open("GET", url, false);
+        // if the url is for mirror.ifarchive.org, don't go there; resolve it to a non-mirror url first
+        var non_mirror_url = resolve_mirror(url);
+        xmlhttp.open("GET", non_mirror_url, false);
         xmlhttp.send();
         var story_data = text_to_array( xmlhttp.responseText );
         b64_data = base64_encode(story_data);
@@ -288,6 +289,32 @@ function mirror_ifarchive_url(url) {
     return url;
 }         
 
+function resolve_mirror(url) {
+    var urldomain_regex = /^(file:|([\w-]+:)?\/\/[^\/?#]+)/;
+    var story_domain = urldomain_regex.exec(url) ? (urldomain_regex.exec(url)[0] + "/") : urldomain_regex.exec(location)[0];
+
+    var if_mirror_hosts = [
+        "http://www.ifarchive.org/",
+        "http://ifarchive.org/",
+        "ftp://ftp.ifarchive.org/",
+        "http://ifarchive.jmac.org/",
+        "http://ifmirror.russotto.net/",
+        "http://ifarchive.flavorplex.com/",
+        "http://ifarchive.smallwhitehouse.org/",
+        "http://ifarchive.wurb.com/",
+        "http://ifarchive.plover.net/",
+        "http://www.ifarchive.info/",
+        "http://ifarchive.ifreviews.org/",
+        "ftp://ifarchive.ifreviews.org/",
+        "http://ifarchive.heanet.ie/",
+        "http://ifarchive.giga.or.at/",
+        "http://if-archive.guetech.org/"
+    ];
+
+    var random_domain = if_mirror_hosts[Math.round(Math.random()*(if_mirror_hosts.length-1))];
+    url = url.replace(story_domain, random_domain);
+    return url;
+}
 
 
 window.file = {

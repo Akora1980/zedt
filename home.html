@@ -25,7 +25,7 @@
                     save_menu += "<div class='save-box' id='s-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "'>";
                     save_menu += "<strong>" + save_filename + "</strong><br/ >";
                     save_menu += "<div class='save option-bar'>";
-                    //save_menu += "<div class='save option-download'><img class='save option-download-image' id='sd-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "' src='images/page_white_put.png' / ></div>";
+                    save_menu += "<div class='save option-download'><img class='save option-download-image' id='sd-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "' src='images/page_white_put.png' / ></div>";
                     save_menu += "<div class='save option-delete'><img class='save option-delete-image' id='sd-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "' src='images/delete.png' title='Delete' / ></div>";
                     save_menu += "</div></div>";
                 }
@@ -293,7 +293,7 @@
             });
 
             // donwload a save file
-            /*$('.save.option-download-image').live('click',function(){
+            $('.save.option-download-image').live('click',function(){
                 var id = this.id;
                 var id_parts = id.split('-');
                 var game = decodeURIFromId(id_parts[1]);
@@ -301,9 +301,9 @@
                 var save_list = window.localStorage.getItem("saves");
                 var game_list = window.localStorage.getItem("games");
 
-                console.log("data:base64," + game_list[game]["data"]);
+                window.open("data:x-zmachine;base64," + save_list[game][save_filename]);
                 return false;
-            });*/
+            });
 
             // handle file upload
             $("#file-upload").change(function () {
@@ -400,6 +400,9 @@ Alternatively, choose one of the options below:<br />
         <td><input type="text" id="game-edit-author" size="40" /></td>
       </tr>
     </table>
+
+    <a href="">Clear cached game file</a> - this removes the offline cache of the game file and forces the game to be downloaded again next time it is run<br />
+    <a href="">Download Game</a> - save the game file to your hard drive
 </div>
 
 <div id="delete-save-dialog">

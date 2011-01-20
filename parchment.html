@@ -5,7 +5,7 @@
 	<title>Parchment</title>
     <script src="universal.js"></script>
     <script src="init.js"></script>
-	<script src="lib/jquery.min.js" defer></script>
+	<script src="lib/jquery.min.js"></script>
 	<script src="lib/parchment.min.js" defer></script>
     <script src="lib/zmachine.min.js" defer></script>
     <script src="src/gnusto/gnusto-engine.js" defer></script>
@@ -13,8 +13,64 @@
 	<link rel="stylesheet" type="text/css" href="styles/ui-lightness/jquery-ui-1.8.7.custom.css">
 	<link rel="stylesheet" type="text/css" href="parchment.css">
 	<meta name="viewport" content="width=device-width,user-scalable=no">
+
+    <script language="javascript" defer>
+        function getSelector(sText) {
+            var S = document.styleSheets[1]
+            var rules = S.rules||S.cssRules // IE ¦¦ others
+            for(var r=0;r<rules.length;r++) {
+                if(rules[r].selectorText==sText) {
+                    return rules[r].style
+                }
+            }
+            return null;
+        }
+
+        function setBackgroundColor(color) {
+            getSelector(".bg-default").backgroundColor = color;
+            getSelector("body").backgroundColor = color;
+            window.localStorage.setItem("bgcolor",color);
+        }
+
+        function setForegroundColor(color) {
+            getSelector(".fg-default").color = color;
+            window.localStorage.setItem("fgcolor",color);
+        }
+
+        $(function() {
+            var hiding_menu_timeout;
+
+            setBackgroundColor(window.localStorage.getItem("bgcolor") || "white");
+            setForegroundColor(window.localStorage.getItem("fgcolor") || "black");
+
+            $("html").click(function() { $("input")[0].focus(); }); // alway refocus to the input line 
+
+            $(window).scroll(function() {
+                $("#color_menu").css("top", $("body").scrollTop() + "px");
+            });
+
+            $("#color_menu_wrapper").mouseover(function() {
+                $("#color_menu").slideDown();
+                clearTimeout(hiding_menu_timeout);
+            });
+
+            $("#color_menu_wrapper").mouseout(function() {
+                hiding_menu_timeout = setTimeout(function() { $("#color_menu").slideUp(); }, 300);
+            });
+
+            setTimeout(function() { $("#color_menu").slideUp(); }, 700);
+        });
+    </script>
 </head>
 <body>
+    <div id="color_menu_wrapper">
+        <div id="color_menu">
+            <div class="color-box" style="background-color: white; color: black;" onclick="setBackgroundColor('white'); setForegroundColor('black');">>_</div>
+            <div class="color-box" style="background-color: #ffffc2; color: black;" onclick="setBackgroundColor('#ffffc2'); setForegroundColor('black');">>_</div>
+            <div class="color-box" style="background-color: blue; color: white;" onclick="setBackgroundColor('blue'); setForegroundColor('white');">>_</div>
+            <div class="color-box" style="background-color: #black; color: white;" onclick="setBackgroundColor('black'); setForegroundColor('white');">>_</div>
+        </div>
+    </div>
 	<div id="about">
 		<h1>Parchment</h1>
 		<p>is an interpreter for Interactive Fiction. <a href="http://parchment.googlecode.com">Find out more.</a></p>

@@ -327,6 +327,7 @@
                     file.add_to_library({"link":url}, storyString, true);
                     window.open('parchment.html?story=' + encodeURIComponent(url));
                     $('#upload-game-dialog').dialog('close');
+                    $("#file-upload").get(0).value = ""
                 };
                 reader.readAsBinaryString(file_obj);
             });
@@ -421,7 +422,7 @@ Really delete <span id="delete-game-name"></span> and all associated save files?
 Enter the URL of a z-code game in the box below and click "Play".
 </div>
 <input type="text" id="new-story-url" title="Enter the full URL of a zcode file, e.g. 'http://www.ifarchive.org/if-archive/games/zcode/photopia.z5'" />
-<input type="button" value="Play" onclick="window.open('parchment.html?story=' + encodeURIComponent($('#new-story-url').val())); $('#add-game-url-dialog').dialog('close');" />
+<input type="button" value="Play" onclick="window.open('parchment.html?story=' + encodeURIComponent($('#new-story-url').val())); $('#add-game-url-dialog').dialog('close'); $('#new-story-url').val('');" />
 </div>
 
 <div id="first-time-dialog">

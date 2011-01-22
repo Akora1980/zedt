@@ -203,7 +203,7 @@ body
 }
 
 #color_menu_wrapper {
-    position: absolute;
+    position: fixed;
     top: 0px;
     right: 0px;
     min-height: 150px;

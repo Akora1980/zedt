@@ -45,10 +45,6 @@
 
             $("html").click(function() { $("input")[0].focus(); }); // alway refocus to the input line 
 
-            $(window).scroll(function() {
-                $("#color_menu").css("top", $("body").scrollTop() + "px");
-            });
-
             $("#color_menu_wrapper").mouseover(function() {
                 $("#color_menu").slideDown();
                 clearTimeout(hiding_menu_timeout);

@@ -252,7 +252,6 @@ function mirror_ifarchive_url(url) {
     var if_mirror_hosts = [
         "http://www.ifarchive.org/",
         "http://ifarchive.org/",
-        "ftp://ftp.ifarchive.org/",
         "http://ifarchive.jmac.org/",
         "http://ifmirror.russotto.net/",
         "http://ifarchive.flavorplex.com/",
@@ -261,7 +260,6 @@ function mirror_ifarchive_url(url) {
         "http://ifarchive.plover.net/",
         "http://www.ifarchive.info/",
         "http://ifarchive.ifreviews.org/",
-        "ftp://ifarchive.ifreviews.org/",
         "http://ifarchive.heanet.ie/",
         "http://ifarchive.giga.or.at/",
         "http://if-archive.guetech.org/"

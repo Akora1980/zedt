@@ -224,6 +224,7 @@ Library = Object.subClass({
 	// Load a story or savefile
 	load: function(id)
 	{
+
 		var self = this,
 		
 		options = parchment.options;
@@ -254,7 +255,6 @@ Library = Object.subClass({
 			window.document.title = storyName;
 		}
 		
-        console.log(self.stories.url)
 		// Check the story cache first
 		if ( self.stories.url[url] ) {
 			var story = self.stories.url[url];

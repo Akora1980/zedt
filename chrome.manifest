@@ -1,0 +1,7 @@
+content   zedt                 chrome/content/
+skin      zedt   classic/1.0   chrome/skin/
+locale    zedt   en-US         chrome/locale/en-US/
+
+
+overlay   chrome://browser/content/browser.xul   chrome://zedt/content/ff-overlay.xul
+overlay   chrome://browser/content/browser.xul   chrome://zedt/content/sidebar-overlay.xul

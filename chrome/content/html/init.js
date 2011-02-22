@@ -1,11 +1,12 @@
 // if this is a new install or the local storage has been wiped
-var ver = window.localStorage.getItem("storage_version");
+var ver = window.ff_localStorage.getItem("storage_version");
 if(ver == null) {
     // pull a couple games from the hard drive
 	var urldomain = /^(file:|([\w-]+:)?\/\/[^\/?#]+)/;
 	var page_domain = urldomain.exec(location)[0];
 
-    var xmlhttp = new XMLHttpRequest();
+    var xmlhttp = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance(Components.interfaces.nsIXMLHttpRequest);
+
     var url;
     var story_data;
     xmlhttp.overrideMimeType('text/plain; charset=x-user-defined');
@@ -27,5 +28,5 @@ if(ver == null) {
         file.add_to_library(curr_game, b64_data, false);
     }
 
-    window.localStorage.setItem("storage_version", 1);
+    window.ff_localStorage.setItem("storage_version", 1);
 }

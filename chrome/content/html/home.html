@@ -7,18 +7,26 @@
 	<script src="lib/jquery-ui-1.8.7.custom.min.js"></script>
     <script src="lib/jquery.tablesorter.min.js"></script>
 	<script src="universal.js"></script>
+	<script src="ff_localStorage.js"></script>
     <script src="src/parchment/file-chrome.js"></script>
     <script src="init.js"></script>
 	<link rel="stylesheet" type="text/css" href="parchment.css">
 	<link rel="stylesheet" type="text/css" href="styles/ui-lightness/jquery-ui-1.8.7.custom.css">
 	<link rel="stylesheet" type="text/css" href="home.css">
     <link rel="stylesheet" href="styles/tablesorter/style.css" type="text/css">
+    <link rel="shortcut icon" href="favicon.ico" />
 	<meta name="viewport" content="width=device-width,user-scalable=no">
 
     <script language="javascript">
+        function openFFTab(fullURI) {
+            var wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+            var mainWindow = wm.getMostRecentWindow('navigator:browser');
+            mainWindow.gBrowser.selectedTab = mainWindow.gBrowser.addTab(fullURI);
+        }
+
         function saveUI(game_id) {
             var save_menu = "";
-            var save_list = window.localStorage.getItem("saves");
+            var save_list = window.ff_localStorage.getItem("saves");
             save_menu += "<tr class='saves' id='saves-" + encodeURIForId(game_id) + "'><td colspan='5'>";
             if(save_list && save_list[game_id]) {
                 for(save_filename in save_list[game_id]) {
@@ -72,6 +80,12 @@
                 buttons: {"Ok" : function() { $(this).dialog("close"); }}
             });
 
+            // show the initial popup
+            if(!ff_localStorage.getItem("main_screen_viewed")) {
+                $('#first-time-dialog').dialog("open");
+                ff_localStorage.setItem("main_screen_viewed", true)
+            }
+
             $.tablesorter.addWidget({ 
                 // give the widget a id 
                 id: "sortSaves", 
@@ -87,8 +101,8 @@
 
             var game_menu = "";
             var game_count = -1;
-            var game_list = window.localStorage.getItem("games");
-            var save_list = window.localStorage.getItem("saves") || {};
+            var game_list = window.ff_localStorage.getItem("games");
+            var save_list = window.ff_localStorage.getItem("saves") || {};
             var current_row = document.getElementById("row-1");
 
             // create table of games and add headers
@@ -138,7 +152,8 @@
 
             // play a game by clicking the play button
 			$('.game-box').live("click", function(){
-                window.open("parchment.html?story=" + decodeURIFromId(this.id.split('-')[1]));
+                curr_dir = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
+                openFFTab(curr_dir + "parchment.html?story=" + decodeURIFromId(this.id.split('-')[1]));
                 return false;
 			});
 
@@ -168,13 +183,14 @@
                 var id_parts = this.id.split('-');
                 var game = decodeURIFromId(id_parts[1]);
                 var save_filename = decodeURIFromId(id_parts[2]);                
-                var save_data = window.localStorage.getItem("saves")[game][save_filename];
-                window.open("parchment.html?story=" + game + "#" + save_data);
+                var save_data = window.ff_localStorage.getItem("saves")[game][save_filename];
+                curr_dir = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
+                openFFTab(curr_dir + "parchment.html?story=" + game + "#" + save_data);
             });
 
             // edit game bibligraphic info
             $('.game.option-edit-image').live('click', function(){
-                var game_list = window.localStorage.getItem("games");
+                var game_list = window.ff_localStorage.getItem("games");
                 var game_id = $(this).parent().parent().parent().first()[0].id.split('-')[1];
                 var game_key = decodeURIFromId(game_id);
                 var game = game_list[game_key];
@@ -200,7 +216,7 @@
                             }
                             game_list[game_key].author = new_author;
 
-                            window.localStorage.setItem("games", game_list);
+                            window.ff_localStorage.setItem("games", game_list);
 
                             $('#g-' + game_id).find('.game-title').html(new_title);
                             $('#g-' + game_id).find('.game-author').html(new_author);
@@ -222,8 +238,8 @@
                 var id = this.id;
                 var id_parts = id.split('-');
                 var game_key = decodeURIFromId(id_parts[1]);            
-                var save_list = window.localStorage.getItem("saves") || {};
-                var game_list = window.localStorage.getItem("games");
+                var save_list = window.ff_localStorage.getItem("saves") || {};
+                var game_list = window.ff_localStorage.getItem("games");
 
 	    		$('#delete-game-dialog').dialog({
 	    			autoOpen: true,
@@ -237,8 +253,8 @@
 			    		"Ok": function() {
                             game_list[game_key] = undefined;
                             save_list[game_key] = undefined;
-                            window.localStorage.setItem("saves", save_list);
-                            window.localStorage.setItem("games", game_list);
+                            window.ff_localStorage.setItem("saves", save_list);
+                            window.ff_localStorage.setItem("games", game_list);
                             var $deleted_box = $('#g-' + id_parts[1]);
                             if($deleted_box.next().hasClass('saves')) {
                                 $deleted_box.next().remove();
@@ -260,8 +276,8 @@
                 var id_parts = id.split('-');
                 var game = decodeURIFromId(id_parts[1]);
                 var save_filename = decodeURIFromId(id_parts[2]);                
-                var save_list = window.localStorage.getItem("saves");
-                var game_list = window.localStorage.getItem("games");
+                var save_list = window.ff_localStorage.getItem("saves");
+                var game_list = window.ff_localStorage.getItem("games");
 
 	    		$('#delete-save-dialog').dialog({
 	    			autoOpen: true,
@@ -275,7 +291,7 @@
 			    	buttons: {
 			    		"Ok": function() {
                             save_list[game][save_filename] = undefined;
-                            window.localStorage.setItem("saves", save_list);
+                            window.ff_localStorage.setItem("saves", save_list);
                             var $deleted_box = $('#s-' + id_parts[1] + "-" + id_parts[2]);
                             if($deleted_box.parent().children().size() == 1) {
                                 $deleted_box.parent().parent().toggle();
@@ -298,10 +314,11 @@
                 var id_parts = id.split('-');
                 var game = decodeURIFromId(id_parts[1]);
                 var save_filename = decodeURIFromId(id_parts[2]);                
-                var save_list = window.localStorage.getItem("saves");
-                var game_list = window.localStorage.getItem("games");
+                var save_list = window.ff_localStorage.getItem("saves");
+                var game_list = window.ff_localStorage.getItem("games");
 
-                window.open("data:x-zmachine;base64," + save_list[game][save_filename]);
+                curr_dir = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
+                openFFTab("data:x-zmachine;base64," + save_list[game][save_filename]);
                 return false;
             });
 
@@ -325,25 +342,20 @@
 
                     // add game, launch game, clean up dialog, add game to list
                     file.add_to_library({"link":url}, storyString, true);
-                    window.open('parchment.html?story=' + encodeURIComponent(url));
+                    curr_dir = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
+                    openFFTab(curr_dir + 'parchment.html?story=' + encodeURI(url));
                     $('#upload-game-dialog').dialog('close');
                     $("#file-upload").get(0).value = ""
                 };
                 reader.readAsBinaryString(file_obj);
             });
 
-            chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+            /*chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
                 var is_even = ($(".game-table tbody").children("tr.game-box").size() % 2 == 1);
                 $(".game-table tbody").append(gameUI(request.url, {}, is_even));
                 $(".game-table").trigger("update");
                 sendResponse({});
-            });
-
-            // show the initial popup
-            if(!localStorage.getItem("main_screen_viewed")) {
-                $('#first-time-dialog').dialog("open");
-                localStorage.setItem("main_screen_viewed", true)
-            }
+            });*/
         });
     </script>
 </head>
@@ -370,7 +382,7 @@ Alternatively, choose one of the options below:<br />
 </div>
 
 <div id="credits">
-<a href="javascript:$('#credits-dialog').dialog('open');">Credits/License</a>
+<a href="#" onclick="$('#credits-dialog').dialog('open'); return false;">Credits/License</a>
 </div>
 
 </div>
@@ -413,8 +425,7 @@ Really delete <span id="delete-game-name"></span> and all associated save files?
 
 <div id="upload-game-dialog">
 <div class="instructions">Upload a z-code file directly from your computer.</div>
-<div class="instructions"><input id="file-upload" type="file" size="60"></div>
-<div style="font-size: 70%;">At present, it is strongly recommended that you use this feature sparingly, since there is limit on local storage.  If possible, use game files hosted online, e.g., at the IF Archive.<br /><br />Future versions of Zedt should eliminate this limitation.</div>
+<div class="instructions"><input id="file-upload" type="file" size="30"></div>
 </div>
 
 <div id="add-game-url-dialog">
@@ -422,7 +433,7 @@ Really delete <span id="delete-game-name"></span> and all associated save files?
 Enter the URL of a z-code game in the box below and click "Play".
 </div>
 <input type="text" id="new-story-url" title="Enter the full URL of a zcode file, e.g. 'http://www.ifarchive.org/if-archive/games/zcode/photopia.z5'" />
-<input type="button" value="Play" onclick="window.open('parchment.html?story=' + encodeURIComponent($('#new-story-url').val())); $('#add-game-url-dialog').dialog('close'); $('#new-story-url').val('');" />
+<input type="button" value="Play" onclick="var wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator); var mainWindow = wm.getMostRecentWindow('navigator:browser'); mainWindow.gBrowser.addTab('parchment.html?story=' + encodeURIComponent($('#new-story-url').val())); $('#add-game-url-dialog').dialog('close'); $('#new-story-url').val('');" />
 </div>
 
 <div id="first-time-dialog">

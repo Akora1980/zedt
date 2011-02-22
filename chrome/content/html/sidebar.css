@@ -1,0 +1,221 @@
+body {
+  background-color: #111144;
+  font-size: 9pt;
+  padding: 5px;
+}
+
+#all-visible {
+  color: #fff;
+  font-family: courier;
+}
+
+#all-visible a {
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.sidebar-title {
+  font-size: 16pt;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.sidebar-main-link {
+  margin: 5px;
+  border: white solid thin;
+  background-color: #115;
+  color: white;
+  width: 90%;
+  cursor: pointer;
+}
+
+.sidebar-main-link a:hover {
+  color: #ff7;
+}
+
+.game-row {
+  clear: both;
+}
+
+.game-table {
+  margin-left:auto;
+  margin-right:auto;
+  font-size: 10pt;
+  font-family: courier;
+}
+
+.game-table td {
+  border-style: none;
+}
+
+.game-box {
+  margin: 1px;
+  padding: 1px;
+  cursor: pointer;
+  position: relative;
+  text-align: left;
+}
+
+tr.even {
+  background-color: #aab;
+}
+
+.game-box:hover.even {
+  background-color: #bbc;
+}
+
+tr.odd {
+  background-color: #88a;
+}
+
+.game-box:hover.odd {
+  background-color: #99b;
+}
+
+.game-title {
+
+}
+
+.game-title-header {
+  min-width: 50%;
+}
+
+.game-author {
+  max-width: 50%;
+  overflow: hidden;
+}
+
+.game-author-header {
+  max-width: 50%;
+}
+
+.option-bar {
+  clear: both;
+}
+
+.option-delete {
+  padding: 5px;
+  float: right;
+  bottom: 0;
+  right: 0;
+}
+
+.option-edit {
+  padding: 5px;
+  float: right;
+  bottom: 0;
+}
+
+.option-download {
+  padding: 5px;
+  float: right;
+  bottom: 0;
+}
+
+#credits {
+  clear: both;
+  padding-bottom: 5px;
+  text-align: center;
+  font-size: 80%;
+  text-decoration: underline;
+}
+
+#credits-dialog {
+  font-size: 80%;
+}
+
+#credits-dialog div {
+  padding: 5px;
+}
+
+#credits-dialog a {
+  color: blue;
+}
+
+.instructions {
+  padding-top: 10px;
+  padding-bottom: 15px;
+}
+
+.save-box {
+  width: 155px;
+  height: 20px;
+  margin: 7px;
+  padding: 3px;
+  background-color: #77e;
+  cursor: pointer;
+  float: left;
+  -webkit-border-radius: 5px;
+  border-top: 1px #555 solid;
+  border-right: 1px #333 solid;
+  border-bottom: 1px #333 solid;
+  border-left: 1px #555 solid;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.save-box:hover {
+  background-color: #4444FF;
+}
+
+.saves td {
+  text-align: left;
+}
+
+.saves {
+  display: none;
+}
+
+#delete-save-name {
+  font-weight: bold;
+}
+
+#delete-save-game {
+  font-style: italic;
+}
+
+.play-button-box {
+  width: 5%;
+  background-image:url('images/control_play.png');
+  background-repeat:no-repeat;
+  background-position:center; 
+}
+
+/* tables */
+table.tablesorter {
+	font-family: courier;
+	background-color: #eee;
+	margin:10px 0 15px;
+	width: 100%;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	background-color: #9999a5;
+	padding: 4px;
+}
+table.tablesorter thead tr .header {
+	background-image: url(bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+    color: #000;
+}
+table.tablesorter tbody td {
+	color: #000;
+	padding-right: 4px;
+	padding-left: 4px;
+	padding-top: 7px;
+	padding-bottom: 7px;
+	vertical-align: middle;
+    font-size: 10pt;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #777780;
+}

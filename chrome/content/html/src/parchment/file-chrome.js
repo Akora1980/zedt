@@ -127,6 +127,7 @@ xhr = null;
 // Download a file to a byte array
 function download_to_array( url, callback )
 {
+
 	// URL regexp
 	var urldomain = /^(file:|([\w-]+:)?\/\/[^\/?#]+)/,
 	
@@ -147,7 +148,7 @@ function download_to_array( url, callback )
 	// It should however work for the rest of the world, so we have to test here, rather than when first checking for binary support
 	var options;
 
-    var game_list = window.localStorage.getItem("games") || {};
+    var game_list = window.ff_localStorage.getItem("games") || {};
 
     // if there is not a copy of the game in the local cache, fetch the game
     if(game_list[url] == undefined || game_list[url]["data"] == undefined || game_list[url]["data"] == "") {
@@ -165,7 +166,7 @@ function download_to_array( url, callback )
     } else {
         // the game is in local storage, so let's use that
         game_list[url]["accessed"] = Math.round(new Date().getTime() / 1000);
-        window.localStorage.setItem("games", game_list);
+        window.ff_localStorage.setItem("games", game_list);
         callback( base64_decode(game_list[url]["data"]) );
     }
 }
@@ -175,7 +176,7 @@ function add_to_library(metadata, b64_data, is_local, callback) {
     var is_local = is_local || false; // is the file a local upload?  default no
     var url = metadata.link;
 
-    var game_list = window.localStorage.getItem("games") || {};
+    var game_list = window.ff_localStorage.getItem("games") || {};
 
     // if this url is not in the library, add it
     if(!game_list[url]) {
@@ -183,7 +184,7 @@ function add_to_library(metadata, b64_data, is_local, callback) {
         game_list[url]["local"] = is_local;
 
         // let the library tab know we have a new game
-        chrome.extension.sendRequest({"url":url}, function(response) { });
+        //chrome.extension.sendRequest({"url":url}, function(response) { });
     }
 
     game_list[url]["title"] = metadata.title || url.split("/").pop();
@@ -200,7 +201,7 @@ function add_to_library(metadata, b64_data, is_local, callback) {
     var store_complete = false;
     while(!store_complete) {
         try {
-            window.localStorage.setItem("games", game_list);
+            window.ff_localStorage.setItem("games", game_list);
             store_complete = true;
         } catch(e) {
             // if we are out of space, remove the cached data of the oldest game
@@ -223,7 +224,7 @@ function add_to_library(metadata, b64_data, is_local, callback) {
                 // we couldn't find any more cache files to delete, and we still don't have space, so dump the cache data for this game
                 game_list[url]["data"] = undefined;
                 try {
-                    window.localStorage.setItem("games", game_list);
+                    window.ff_localStorage.setItem("games", game_list);
                 } catch(e) {
                     // we don't even have enough space for the game's metadata!
                     // the user has to dump some saves or another game's metadata
@@ -252,6 +253,7 @@ function mirror_ifarchive_url(url) {
     var if_mirror_hosts = [
         "http://www.ifarchive.org/",
         "http://ifarchive.org/",
+        "ftp://ftp.ifarchive.org/",
         "http://ifarchive.jmac.org/",
         "http://ifmirror.russotto.net/",
         "http://ifarchive.flavorplex.com/",
@@ -260,6 +262,7 @@ function mirror_ifarchive_url(url) {
         "http://ifarchive.plover.net/",
         "http://www.ifarchive.info/",
         "http://ifarchive.ifreviews.org/",
+        "ftp://ifarchive.ifreviews.org/",
         "http://ifarchive.heanet.ie/",
         "http://ifarchive.giga.or.at/",
         "http://if-archive.guetech.org/"

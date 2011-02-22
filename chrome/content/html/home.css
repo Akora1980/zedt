@@ -8,6 +8,7 @@ body {
   background-color: #000044;
   color: #fff;
   -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
   font-family: courier;
 }
 

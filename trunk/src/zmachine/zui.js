@@ -294,6 +294,7 @@ onRestore: function(callback)
 			  "Cancel": function() {
                   callback( false );
 				  $(this).dialog("close");
+                  $("#zui-restore-dialog").remove();
 			  } 
 		  }
 	  });

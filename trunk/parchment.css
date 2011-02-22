@@ -228,4 +228,37 @@ body
     right: 0px;
 }
 
+#link_menu_wrapper {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    min-height: 100px;
+    min-width: 150px;
+    padding: 5px;
+}
+
+#link_menu {
+    background-color: white;
+    z-index: 1;
+    border: thin solid black;
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.link-box {
+    margin: 5px;
+    padding: 8px;
+    font-weight: bold;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    cursor: pointer;
+    border: thin solid black;
+    text-align: center;
+    background-color: #eef;
+}
+
+.menu-link {
+    color: black;
+}
 

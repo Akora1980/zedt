@@ -110,9 +110,25 @@ tr.odd {
   color: blue;
 }
 
-.instructions {
-  padding-top: 10px;
-  padding-bottom: 15px;
+.instruction-box {
+  background-color: #55F;
+  margin-bottom: 15px;
+}
+
+.instruction-box-toggle { 
+  float: left;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.instruction-text {
+  font-weight: bold;
+  padding: 5px 5px 5px 25px;
+}
+
+.show-instruction { 
+  display:none;
+  padding: 5px 5px 5px 25px;
 }
 
 .save-box {

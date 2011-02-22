@@ -45,16 +45,35 @@
 
             $("html").click(function() { $("input")[0].focus(); }); // alway refocus to the input line 
 
+            // show/hide the color selector
             $("#color_menu_wrapper").mouseover(function() {
                 $("#color_menu").slideDown();
                 clearTimeout(hiding_menu_timeout);
             });
-
             $("#color_menu_wrapper").mouseout(function() {
                 hiding_menu_timeout = setTimeout(function() { $("#color_menu").slideUp(); }, 300);
             });
 
+            // show/hide the left-hand menu
+            $("#link_menu_wrapper").mouseover(function() {
+                $("#link_menu").slideDown();
+                clearTimeout(hiding_menu_timeout);
+            });
+            $("#link_menu_wrapper").mouseout(function() {
+                hiding_menu_timeout = setTimeout(function() { $("#link_menu").slideUp(); }, 300);
+            });
+
+            // add the download link
+            url = decodeURI(window.location.search.substring(window.location.search.indexOf('search=')+8));
+            games = localStorage.getItem("games");
+            if(!games[url]["local"]) {
+                $("#download_link").attr("href", url);
+            } else {
+                $("#download_link").attr("href", "data:x-zmachine;base64," + games[url]['data']);
+            }
+
             setTimeout(function() { $("#color_menu").slideUp(); }, 700);
+            setTimeout(function() { $("#link_menu").slideUp(); }, 700);
         });
     </script>
 </head>
@@ -64,7 +83,13 @@
             <div class="color-box" style="background-color: white; color: black;" onclick="setBackgroundColor('white'); setForegroundColor('black');">>_</div>
             <div class="color-box" style="background-color: #ffffc2; color: black;" onclick="setBackgroundColor('#ffffc2'); setForegroundColor('black');">>_</div>
             <div class="color-box" style="background-color: blue; color: white;" onclick="setBackgroundColor('blue'); setForegroundColor('white');">>_</div>
-            <div class="color-box" style="background-color: #black; color: white;" onclick="setBackgroundColor('black'); setForegroundColor('white');">>_</div>
+            <div class="color-box" style="background-color: black; color: white;" onclick="setBackgroundColor('black'); setForegroundColor('white');">>_</div>
+        </div>
+    </div>
+    <div id="link_menu_wrapper">
+        <div id="link_menu">
+            <div class="link-box"><a href="home.html" target="_blank" class="menu-link">Open main menu</a></div>
+            <div class="link-box"><a href="" id="download_link" class="menu-link">Download game</a></div>
         </div>
     </div>
 	<div id="about">

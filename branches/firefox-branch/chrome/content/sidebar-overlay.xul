@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://zedt/skin/overlay.css" type="text/css"?>
+<!DOCTYPE overlay SYSTEM "chrome://zedt/locale/sidebar.dtd">
+
+<overlay id="sidebar-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <menupopup id="viewSidebarMenu">
+    <menuitem observes="viewSidebar_zedt" key="key_openZedtSidebar" />
+  </menupopup>
+
+  <keyset id="mainKeyset">
+    <key id="key_openZedtSidebar" command="viewSidebar_zedt"
+         key="&openZedtSidebar.commandkey;" 
+         modifiers="&openZedtSidebar.modifierskey;" />
+  </keyset>
+
+  <broadcasterset id="mainBroadcasterSet">
+    <broadcaster id="viewSidebar_zedt"
+                 label="&zedtsidebar.title;"
+                 autoCheck="false"
+                 type="checkbox"
+                 group="sidebar"
+                 sidebarurl="chrome://zedt/content/zedt-sidebar.xul"
+                 sidebartitle="&zedtsidebar.title;"
+                 oncommand="toggleSidebar('viewSidebar_zedt');" />
+  </broadcasterset>
+
+</overlay>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://zedt/skin/overlay.css" type="text/css"?>
+<!DOCTYPE overlay SYSTEM "chrome://zedt/locale/overlay.dtd">
+
+<overlay id="zedt-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="overlay.js"/>
+  <script src="ff-overlay.js"/>
+
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="zedt-strings" src="chrome://zedt/locale/overlay.properties"/>
+  </stringbundleset>
+
+  <popup id="contentAreaContextMenu">
+    <menuitem id="context-zedt" label="&zedtContext.label;"
+              accesskey="&zedtContext.accesskey;"
+              class="menuitem-iconic"
+              image="chrome://zedt/content/html/icon_16.png"
+              insertafter="context-stop"
+              oncommand="zedt.onMenuItemCommand(event)"/>
+  </popup>
+
+  <menupopup       id="menu_ToolsPopup">
+    <menuitem      id="zedttoolsmenu"   label="Zedt"    oncommand="zedt.openLibraryPage()"
+                   accesskey="Z"        position="8"    class="menuitem-iconic"/>
+  </menupopup>
+
+
+
+</overlay>

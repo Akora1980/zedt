@@ -1,0 +1,8 @@
+<!ENTITY zedt.label "Your localized menuitem">
+<!ENTITY zedtContext.label "Play and add to Zedt Library">
+<!ENTITY zedtContext.accesskey "Z">
+<!ENTITY zedtToolbarButton.label "Your Toolbar Button">
+<!ENTITY zedtToolbarButton.tooltip "This is your toolbar button!">
+<!ENTITY zedtSidebar.label "Your Sidebar">
+<!ENTITY zedtToolbar.name  "example">
+<!ENTITY zedtToolbar.label "This is an example toolbar. You can hide it under View &gt; toolbars &gt; &zedtToolbar.name;">

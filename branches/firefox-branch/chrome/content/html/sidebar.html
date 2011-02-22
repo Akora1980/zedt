@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Zedt</title>
+	<script src="lib/jquery.min.js"></script>
+	<script src="lib/jquery-ui-1.8.7.custom.min.js"></script>
+    <script src="lib/jquery.tablesorter.min.js"></script>
+	<script src="universal.js"></script>
+	<script src="ff_localStorage.js"></script>
+    <script src="src/parchment/file-chrome.js"></script>
+    <script src="init.js"></script>
+	<link rel="stylesheet" type="text/css" href="parchment.css">
+	<link rel="stylesheet" type="text/css" href="styles/ui-lightness/jquery-ui-1.8.7.custom.css">
+	<link rel="stylesheet" type="text/css" href="sidebar.css">
+    <link rel="shortcut icon" href="favicon.ico" />
+	<meta name="viewport" content="width=device-width,user-scalable=no">
+
+    <script language="javascript">
+        function openFFTab(fullURI) {
+            var wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+            var mainWindow = wm.getMostRecentWindow('navigator:browser');
+            mainWindow.gBrowser.selectedTab = mainWindow.gBrowser.addTab(fullURI);
+        }
+
+
+        function closeSidebar() {
+            window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIWebNavigation).QueryInterface(Components.interfaces.nsIDocShellTreeItem).rootTreeItem.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindow).toggleSidebar();
+        }
+
+
+        function saveUI(game_id) {
+            var save_menu = "";
+            var save_list = window.ff_localStorage.getItem("saves");
+            save_menu += "<tr class='saves' id='saves-" + encodeURIForId(game_id) + "'><td colspan='5'>";
+            if(save_list && save_list[game_id]) {
+                for(save_filename in save_list[game_id]) {
+                    save_menu += "<div class='save-box' id='s-" + encodeURIForId(game_id) + "-" + encodeURIForId(save_filename) + "'>";
+                    save_menu += "<strong>" + save_filename + "</strong><br/ >";
+                    save_menu += "</div>";
+                }
+                save_menu += "</td></tr>";
+            }
+            return save_menu;
+        }
+
+
+        function gameUI(key, game, is_even) {
+            var game_menu = "";
+            game = game ? game : {};
+            game_menu += "<tr class='game-box";
+            if(is_even != undefined) {
+                if(is_even) {
+                    game_menu += " even";
+                } else {
+                    game_menu += " odd";
+                }
+            }
+            game_menu += "' id='g-" + encodeURIForId(key) + "'>";
+            game_menu += "<td class='play-button-box' id='play-" + encodeURIForId(key) + "' title='Show/Hide Saves'></td>";
+            game_menu += "<td class='game-title'>" + (game.title?game.title:key.split("/").pop()) + "</td>"
+            game_menu += "<td class='game-author'>"+ (game.author?game.author:"") + "</td>";
+            game_menu += "</tr>";
+
+            return game_menu;
+        }
+
+        // everything we do when the page loads
+        $(function() {
+            $('#credits-dialog').dialog({ autoOpen: false, modal: true, draggable: false, resizable: false });
+
+            $.tablesorter.addWidget({ 
+                // give the widget a id 
+                id: "sortSaves", 
+                // format is called when the on init and when a sorting has finished 
+                format: function(table) {
+                    var $save_area = $('.saves');
+                    if($save_area.size() != 0) {
+                        $save_area.remove();
+                        $('#g-' + $save_area[0].id.split('-')[1]).after($save_area);
+                    }
+                }
+            });
+
+            var game_menu = "";
+            var game_count = -1;
+            var game_list = window.ff_localStorage.getItem("games");
+            var save_list = window.ff_localStorage.getItem("saves") || {};
+            var current_row = document.getElementById("row-1");
+
+            // create table of games and add headers
+            game_menu += "<table border='0' cellpadding='5' cellspacing='1' class='game-table tablesorter'>";
+            game_menu += "<thead><tr class='game-header'>";
+            game_menu += "<th class='game-play-header' width='1'> </th>";
+            game_menu += "<th class='game-title-header'>Title</th>";
+            game_menu += "<th class='game-author-header'>Author</th>";  
+            game_menu += "</tr></thead><tbody>";
+
+            // provide initial sort of keys
+            var game_keys_and_titles = [];
+            for(var key in game_list){
+                game_keys_and_titles.push([ key, game_list[key].title ]);
+            }
+
+            // sort by title
+            game_keys_and_titles.sort(function(a,b) { return a[1].toLowerCase() > b[1].toLowerCase(); });
+
+            var sorted_game_keys = [];
+            for(key in game_keys_and_titles){
+                sorted_game_keys[game_keys_and_titles[key][0]] = true;
+            }
+
+            // list all the games whose metadata we have in local storage
+            for(key in sorted_game_keys) {
+                game_count++;
+                var game = game_list[key];
+                game_menu += gameUI(key, game);
+            }
+            game_menu += "</tbody></table>";
+            current_row.innerHTML = game_menu;
+
+            // make game table sortable
+            $(".game-table").tablesorter({
+                widgets:["sortSaves", "zebra"],
+                headers: {
+                    0: {
+                        sorter: false 
+                    }, 
+                    3: {
+                        sorter: false 
+                    } 
+                }
+            });
+
+            // play a game by clicking the play button
+			$('.game-box').live("click", function(event){
+                if(event.which == 1) {
+                    curr_dir = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
+                    openFFTab(curr_dir + "parchment.html?story=" + decodeURIFromId(this.id.split('-')[1]));
+                } else {
+                    alert("not left click");
+                }
+                return false;
+			});
+
+            // show/hide saved games when the game row is clicked
+			$('.play-button-box').live('click', function(){
+                // destory all save lists on the page, and then show a list if it wasn't there already
+                var $save_area = $(this).parent().next('.saves');
+                $('.saves').remove();
+                $('.play-button-box').css({"background-image":"url('images/control_play.png')"});
+                $('.play-button-box').removeClass('pointing-down');
+                if($save_area.size() == 0) {
+                    $save_area = $(saveUI(decodeURIFromId($(this).parent()[0].id.split('-')[1])));
+                    $(this).parent().after($save_area);
+                    if($save_area.children('td').first().children().size() == 0) {
+                        $save_area.children('td').css({"padding":"5px 20px"}).html("No save files");
+                    }
+                    $save_area.addClass($(this).parent().hasClass("even")?"even":"odd")
+                    $save_area.show();
+                    $(this).css({"background-image":"url('images/control_down.png')"});
+                    $('.play-button-box').addClass('pointing-down');
+                }
+                return false;
+			});
+
+            // load a save game on click
+            $('.save-box').live('click', function(){
+                var id_parts = this.id.split('-');
+                var game = decodeURIFromId(id_parts[1]);
+                var save_filename = decodeURIFromId(id_parts[2]);                
+                var save_data = window.ff_localStorage.getItem("saves")[game][save_filename];
+                curr_dir = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
+                openFFTab(curr_dir + "parchment.html?story=" + game + "#" + save_data);
+            });
+
+            // edit game bibligraphic info
+            $('.game.option-edit-image').live('click', function(){
+                var game_list = window.ff_localStorage.getItem("games");
+                var game_id = $(this).parent().parent().parent().first()[0].id.split('-')[1];
+                var game_key = decodeURIFromId(game_id);
+                var game = game_list[game_key];
+
+	    		$('#edit-dialog').dialog({
+	    			autoOpen: true,
+		    		width: 500,
+                    modal: true,
+                    title: "Edit story",
+                    open: function() {
+                        $(this).find('#game-edit-url').val(game_key);
+                        $(this).find('#game-edit-title').val(game.title);
+                        $(this).find('#game-edit-author').val(game.author);
+                        //$(this).find('#game-edit-genre').val(game.genre);
+                        //$(this).find('#game-edit-rating').val(game.rating);
+                    },
+			    	buttons: {
+			    		"Ok": function() {
+                            var new_title = $.trim($(this).find('#game-edit-title').val());
+                            var new_author = $.trim($(this).find('#game-edit-author').val());
+                            if(new_title != '') {
+                                game_list[game_key].title = new_title;
+                            }
+                            game_list[game_key].author = new_author;
+
+                            window.ff_localStorage.setItem("games", game_list);
+
+                            $('#g-' + game_id).find('.game-title').html(new_title);
+                            $('#g-' + game_id).find('.game-author').html(new_author);
+
+                            $(".game-table").trigger("update");
+
+			    			$(this).dialog("close");
+			    		}, 
+			    		"Cancel": function() { 
+			    			$(this).dialog("close");
+			    		} 
+			    	}
+			    });
+                return false;
+            });
+
+            // handle file upload
+            $("#file-upload").change(function () {
+                var reader = new FileReader();
+                var file_obj = $("#file-upload").get(0).files[0];
+                reader.onload = function(evt) {
+                    var data = evt.target.result;
+                    var storyBytes = [];
+                    for (var i = 0; i < data.length; i++)
+                      storyBytes.push(data.charCodeAt(i));
+                    var storyString = file.base64_encode(storyBytes);
+                    var timestamp = (new Date()).getTime();
+                    var url = timestamp + '/' + file_obj.name;
+
+                    // message passing doesn't work within the same page, so we must manually add the new menu item
+                    var is_even = ($(".game-table tbody").children("tr.game-box").size() % 2 == 1);
+                    $(".game-table tbody").append(gameUI(url, {}, is_even));
+                    $(".game-table").trigger("update");
+
+                    // add game, launch game, clean up dialog, add game to list
+                    file.add_to_library({"link":url}, storyString, true);
+                    curr_dir = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
+                    openFFTab(curr_dir + 'parchment.html?story=' + encodeURI(url));
+                    $('#upload-game-dialog').dialog('close');
+                    $("#file-upload").get(0).value = ""
+                };
+                reader.readAsBinaryString(file_obj);
+            });
+
+            /*chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+                var is_even = ($(".game-table tbody").children("tr.game-box").size() % 2 == 1);
+                $(".game-table tbody").append(gameUI(request.url, {}, is_even));
+                $(".game-table").trigger("update");
+                sendResponse({});
+            });*/
+        });
+    </script>
+</head>
+<body style="margin-left: auto; margin-right: auto;">
+
+<div id="all-visible">
+
+<div id="about">
+    <div class="sidebar-title">Zedt Quick Library</div>
+    <input type="button" class="sidebar-main-link" onclick="openFFTab('chrome://zedt/content/html/home.html');  closeSidebar();" value="Open Full Menu" />
+    <div class="game-row" id="row-1"></div>
+</div>
+
+<div class="instructions" style="font-weight: bold;">
+<div>To start a new game, click on the title.</div>
+<div>To see your save files for a game, click the arrow next to the title.</div><br />
+
+To add new games, visit the <a onclick="openFFTab('http://ifarchive.org/indexes/if-archiveXgamesXzcode.html')">Interactive Fiction Archive</a>, <a onclick="openFFTab('http://www.wurb.com/if/platform/1');">Baf's Guide</a>, the <a onclick="openFFTab('http://ifdb.tads.org/');">IF Database</a>, or any other website that hosts z-code files, and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".
+</div>
+
+<div id="credits">
+<a href="#" onclick="$('#credits-dialog').dialog('open'); return false;">Credits/License</a>
+</div>
+
+</div>
+
+
+<div id="credits-dialog" style="width:100%;">
+    <a href="" style="position: absolute; font-size:10%;">&nbsp;</a>
+    <div>Zedt is available under the <a href="LICENCE.txt" target="_blank">GNU General Public License Version 2</a>, which means you may share and edit it as long as your redistributions are also available under the GPL.</div>
+    <div>You can get the source code at the <a href="http://code.google.com/p/zedt/source/browse/">Google Code project page</a>, or by pressing Ctrl+U on any page.</div>
+    <div>This app made possible by the free, open source <a href="http://parchment.googlecode.com">Parchment</a> interpreter for Interactive Fiction.</div>
+    <div>Icons are part of the free <a href="http://www.famfamfam.com/lab/icons/silk/">Silk image set</a> by Mark James.</div>
+    <div>App icon based on <a href="http://www.clker.com/clipart-open-book.html">this</a> freely available clipart.</div>
+    <div>Thanks, guys!</div>
+</div>
+
+</body>
+</html>

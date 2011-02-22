@@ -197,6 +197,7 @@ body
     margin: 2px;
     font-weight: bold;
     -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
     cursor: pointer;
     border: thin solid black;
     text-align: center;
@@ -204,6 +205,7 @@ body
 
 #color_menu_wrapper {
     position: fixed;
+    z-index: 2;
     top: 0px;
     right: 0px;
     min-height: 150px;
@@ -213,9 +215,9 @@ body
 
 #color_menu {
     background-color: white;
-    z-index: 1;
     border: thin solid black;
     -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 
 #color_menu div {
@@ -228,4 +230,36 @@ body
     right: 0px;
 }
 
+#link_menu_wrapper {
+    position: fixed;
+    z-index: 2;
+    top: 0px;
+    left: 0px;
+    min-height: 100px;
+    min-width: 150px;
+    padding: 5px;
+}
 
+#link_menu {
+    background-color: white;
+    border: thin solid black;
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.link-box {
+    margin: 2px 0;
+    padding: 8px;
+    font-weight: bold;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border: thin solid black;
+    text-align: center;
+    background-color: #eef;
+}
+
+.menu-link {
+    color: black;
+    padding: 8px 14px;
+}

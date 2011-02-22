@@ -69,6 +69,13 @@
         $(function() {
             $('#credits-dialog').dialog({ autoOpen: false, modal: true, draggable: false, resizable: false });
 
+            // hide the instructions if the user has hidden them
+            if(ff_localStorage.getItem("showInstructions") == false) {
+                $(".instruction-text").hide();
+                $(".show-instruction").show();
+                $(".instruction-box-toggle").attr("src", "images/control_play.png");
+            }
+
             $.tablesorter.addWidget({ 
                 // give the widget a id 
                 id: "sortSaves", 
@@ -247,6 +254,21 @@
                 reader.readAsBinaryString(file_obj);
             });
 
+            $(".instruction-box-toggle").click(function() {
+                var show_instructions = ff_localStorage.getItem("showInstructions");
+                if(show_instructions == null || show_instructions == true) {
+                    $(".instruction-text").hide();
+                    $(".show-instruction").show();
+                    $(".instruction-box-toggle").attr("src", "images/control_play.png");
+                    ff_localStorage.setItem("showInstructions", false);
+                } else {
+                    $(".instruction-text").show();
+                    $(".show-instruction").hide();
+                    $(".instruction-box-toggle").attr("src", "images/control_down.png");
+                    ff_localStorage.setItem("showInstructions", true);
+                }
+            });
+
             /*chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
                 var is_even = ($(".game-table tbody").children("tr.game-box").size() % 2 == 1);
                 $(".game-table tbody").append(gameUI(request.url, {}, is_even));
@@ -266,11 +288,14 @@
     <div class="game-row" id="row-1"></div>
 </div>
 
-<div class="instructions" style="font-weight: bold;">
-<div>To start a new game, click on the title.</div>
-<div>To see your save files for a game, click the arrow next to the title.</div><br />
-
-To add new games, visit the <a onclick="openFFTab('http://ifarchive.org/indexes/if-archiveXgamesXzcode.html')">Interactive Fiction Archive</a>, <a onclick="openFFTab('http://www.wurb.com/if/platform/1');">Baf's Guide</a>, the <a onclick="openFFTab('http://ifdb.tads.org/');">IF Database</a>, or any other website that hosts z-code files, and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".
+<div class="instruction-box">
+    <img class="instruction-box-toggle" src="images/control_down.png" />
+    <div class="instruction-text">
+        <div>To start a new game, click on the title.</div>
+        <div>To see your save files for a game, click the arrow next to the title.</div><br />
+        To add new games, visit the <a onclick="openFFTab('http://ifarchive.org/indexes/if-archiveXgamesXzcode.html')">Interactive Fiction Archive</a>, <a onclick="openFFTab('http://www.wurb.com/if/platform/1');">Baf's Guide</a>, the <a onclick="openFFTab('http://ifdb.tads.org/');">IF Database</a>, or any other website that hosts z-code files, and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".
+    </div>
+    <div class="show-instruction">To start a new game, click...</div>
 </div>
 
 <div id="credits">

@@ -1,0 +1,161 @@
+body {
+  background-color: #bbf;
+}
+
+#all-visible {
+  padding: 20px;
+  margin: 10px;
+  background-color: #000044;
+  color: #fff;
+  -webkit-border-radius: 15px;
+  font-family: courier;
+}
+
+#all-visible a {
+  color: #ff7;
+  font-weight: bold;
+}
+
+.game-table {
+  margin-left:auto;
+  margin-right:auto;
+  font-size: 10pt;
+  font-family: courier;
+}
+
+.game-table td {
+  border-style: none;
+}
+
+.game-box {
+  margin: 1px;
+  padding: 1px;
+  cursor: pointer;
+  position: relative;
+  text-align: left;
+}
+
+tr.even {
+  background-color: #aab;
+}
+
+.game-box:hover.even {
+  background-color: #bbc;
+}
+
+tr.odd {
+  background-color: #88a;
+}
+
+.game-box:hover.odd {
+  background-color: #99b;
+}
+
+.game-title {
+
+}
+
+.game-title-header {
+  min-width: 300px;
+}
+
+.game-author {
+
+}
+
+.game-author-header {
+  min-width: 300px;
+}
+
+.option-bar {
+  clear: both;
+}
+
+.option-delete {
+  padding: 5px;
+  float: right;
+  bottom: 0;
+  right: 0;
+}
+
+.option-edit {
+  padding: 5px;
+  float: right;
+  bottom: 0;
+}
+
+.option-download {
+  padding: 5px;
+  float: right;
+  bottom: 0;
+}
+
+#credits {
+  clear: both;
+  padding-bottom: 5px;
+  padding-top: 15px;
+  text-align: center;
+  font-size: 80%;
+}
+
+#credits-dialog {
+  font-size: 80%;
+}
+
+#credits-dialog div {
+  padding: 5px;
+}
+
+#credits-dialog a {
+  color: blue;
+}
+
+.instructions {
+  padding-top: 10px;
+  padding-bottom: 15px;
+}
+
+.save-box {
+  width: 180px;
+  height: 50px;
+  margin: 5px;
+  padding: 3px;
+  background-color: #77e;
+  cursor: pointer;
+  float: left;
+  -webkit-border-radius: 5px;
+  border-top: 1px #555 solid;
+  border-right: 1px #333 solid;
+  border-bottom: 1px #333 solid;
+  border-left: 1px #555 solid;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.save-box:hover {
+  background-color: #4444FF;
+}
+
+.saves td {
+  text-align: left;
+}
+
+.saves {
+  display: none;
+}
+
+#delete-save-name {
+  font-weight: bold;
+}
+
+#delete-save-game {
+  font-style: italic;
+}
+
+.play-button-box {
+  width: 20px;
+  background-image:url('images/control_play.png');
+  background-repeat:no-repeat;
+  background-position:center; 
+}

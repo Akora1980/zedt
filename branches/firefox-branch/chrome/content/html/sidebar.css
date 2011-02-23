@@ -6,7 +6,7 @@ body {
 
 #all-visible {
   color: #fff;
-  font-family: courier;
+  font-family: monospace;
 }
 
 #all-visible a {
@@ -19,6 +19,7 @@ body {
   font-size: 16pt;
   font-weight: bold;
   padding: 5px;
+  font-family: monospace;
 }
 
 .sidebar-main-link {
@@ -42,7 +43,7 @@ body {
   margin-left:auto;
   margin-right:auto;
   font-size: 10pt;
-  font-family: courier;
+  font-family: monospace;
 }
 
 .game-table td {
@@ -145,7 +146,6 @@ tr.odd {
 }
 
 .instruction-text {
-  font-weight: bold;
   padding: 5px 5px 5px 25px;
 }
 
@@ -201,7 +201,7 @@ tr.odd {
 
 /* tables */
 table.tablesorter {
-	font-family: courier;
+	font-family: monospace;
 	background-color: #eee;
 	margin:10px 0 15px;
 	width: 100%;
@@ -224,7 +224,7 @@ table.tablesorter tbody td {
 	padding-top: 7px;
 	padding-bottom: 7px;
 	vertical-align: middle;
-    font-size: 10pt;
+    font-size: 8pt;
 }
 table.tablesorter thead tr .headerSortUp {
 	background-image: url(asc.gif);

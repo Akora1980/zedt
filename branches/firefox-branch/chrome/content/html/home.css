@@ -9,19 +9,21 @@ body {
   color: #fff;
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
-  font-family: courier;
+  font-family: monospace;
 }
 
 #all-visible a {
   color: #ff7;
   font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .game-table {
   margin-left:auto;
   margin-right:auto;
   font-size: 10pt;
-  font-family: courier;
+  font-family: monospace;
 }
 
 .game-table td {

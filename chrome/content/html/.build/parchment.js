@@ -948,7 +948,7 @@ parchment.lib.TextInput = Object.subClass({
 		
 		// Adjust the input's width and ensure it's empty
 		input
-			.width( self.stream.width() - prompt.width() )
+			.width( self.stream.width() - prompt.width() - 1)
 			.val( '' )
 			.addClass( self.style );
 		

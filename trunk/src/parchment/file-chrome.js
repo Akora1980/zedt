@@ -3,6 +3,7 @@
  * File functions and classes
  *
  * Copyright (c) 2003-2010 The Parchment Contributors
+ * Copyright (c) 2010-2011 Andrew P. Sillers
  * Licenced under the GPL v2
  * http://code.google.com/p/parchment
  */
@@ -160,7 +161,7 @@ function download_to_array( url, callback )
         xmlhttp.send();
         var story_data = text_to_array( xmlhttp.responseText );
         b64_data = base64_encode(story_data);
-        add_to_library({"link":url}, b64_data, false);
+        add_to_library({"link":decodeURI(url)}, b64_data, false);
         callback( story_data );
     } else {
         // the game is in local storage, so let's use that
@@ -186,7 +187,12 @@ function add_to_library(metadata, b64_data, is_local, callback) {
         chrome.extension.sendRequest({"url":url}, function(response) { });
     }
 
-    game_list[url]["title"] = metadata.title || url.split("/").pop();
+    var temp_title = url.split("/").pop();
+    var final_dot_pos = temp_title.lastIndexOf(".");
+    if(final_dot_pos == -1) final_dot_pos = temp_title.length;
+    temp_title = temp_title.substring(0, final_dot_pos);
+
+    game_list[url]["title"] = metadata.title || temp_title;
     game_list[url]["author"] = metadata.author || "";
     game_list[url]["genre"] = metadata.genre || "";
     game_list[url]["rating"] = metadata.rating || -1;

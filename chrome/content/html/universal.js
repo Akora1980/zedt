@@ -13,7 +13,7 @@ Storage.prototype.getItem = function(key) {
 // turns any string into a valid XHTML id that uses no colons, slashes, periods, hyphens, or dashes
 // it uses lots of underscores
 function encodeURIForId(uri) {
-    return encodeURIComponent(uri).replace(/_/g, "%5F").replace(/-/g, "%2D").replace(/\./g, "%2E").replace(/%/g,"_");
+    return encodeURIComponent(uri).replace(/'/g, "%27").replace(/"/g, "%22").replace(/_/g, "%5F").replace(/-/g, "%2D").replace(/\./g, "%2E").replace(/%/g,"_");
 }
 
 function decodeURIFromId(id) {

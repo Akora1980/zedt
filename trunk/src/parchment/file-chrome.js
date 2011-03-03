@@ -147,6 +147,7 @@ function download_to_array( url, callback )
 	// Chrome > 4 doesn't allow file: to file: XHR
 	// It should however work for the rest of the world, so we have to test here, rather than when first checking for binary support
 	var options;
+    var title = null, author = null, genre = null;
 
     var game_list = window.localStorage.getItem("games") || {};
 
@@ -160,8 +161,31 @@ function download_to_array( url, callback )
         xmlhttp.open("GET", non_mirror_url, false);
         xmlhttp.send();
         var story_data = text_to_array( xmlhttp.responseText );
+
+        // if we have a blorb file, get the metadata
+        if(/zblorb$/.test(url)) {
+            // scan for the metadata marker, "IFmd"
+            for(i = 0; i < story_data.length - 3; i++) {
+                if(String.fromCharCode(story_data[i]) == 'I' && String.fromCharCode(story_data[i+1]) == 'F' && String.fromCharCode(story_data[i+2]) == 'm' && String.fromCharCode(story_data[i+3]) == 'd') {
+
+                    // get the four-byte length
+                    var metadata_length = story_data[i+4]*(Math.pow(2,24)) + story_data[i+5]*(Math.pow(2,16)) + story_data[i+6]*(Math.pow(2,8)) + story_data[i+7];
+
+                    // get the metadata
+                    var metadata = story_data.slice(i+8, i+8+metadata_length);
+                    var parser = new DOMParser();
+                    var md_xml = parser.parseFromString(array_to_text(metadata), "text/xml");
+                    var bib = md_xml.getElementsByTagName("bibliographic")[0];
+
+                    title = bib.getElementsByTagName("title")[0].childNodes[0].nodeValue;
+                    author = bib.getElementsByTagName("author")[0].childNodes[0].nodeValue;
+                    if(bib.getElementsByTagName("genre").length > 0) { genre = bib.getElementsByTagName("genre")[0].childNodes[0].nodeValue; }
+                }
+            }
+        }
+
         b64_data = base64_encode(story_data);
-        add_to_library({"link":decodeURI(url)}, b64_data, false);
+        add_to_library({"link":decodeURI(url), "title":title, "author":author, "genre":genre}, b64_data, false);
         callback( story_data );
     } else {
         // the game is in local storage, so let's use that
@@ -184,7 +208,7 @@ function add_to_library(metadata, b64_data, is_local, callback) {
         game_list[url]["local"] = is_local;
 
         // let the library tab know we have a new game
-        chrome.extension.sendRequest({"url":url}, function(response) { });
+        chrome.extension.sendRequest({"url":url, "author":metadata.author, "title":metadata.title}, function(response) { });
     }
 
     var temp_title = url.split("/").pop();
@@ -211,7 +235,7 @@ function add_to_library(metadata, b64_data, is_local, callback) {
         } catch(e) {
             // if we are out of space, remove the cached data of the oldest game
             var oldest_access = Infinity;
-            var deleteion_target = null;
+            var deletion_target = null;
             for(key in game_list) {
                 // check only games that have a cached copy and can be re-downloaded later (i.e. are not uploads)
                 if(game_list[key]["data"] != undefined && !game_list[key]["local"]) {
@@ -224,7 +248,13 @@ function add_to_library(metadata, b64_data, is_local, callback) {
             }
             // perform the deletion
             if(deletion_target != null) {
-                game_list[deletion_target] = undefined;
+                game_list[deletion_target]['data'] = undefined;
+                try {
+                    window.localStorage.setItem("games", game_list);
+                    store_complete = true;
+                } catch(e) {
+                    // try removing more data
+                }
             } else {
                 // we couldn't find any more cache files to delete, and we still don't have space, so dump the cache data for this game
                 game_list[url]["data"] = undefined;
@@ -267,8 +297,7 @@ function mirror_ifarchive_url(url) {
         "http://www.ifarchive.info/",
         "http://ifarchive.ifreviews.org/",
         "http://ifarchive.heanet.ie/",
-        "http://ifarchive.giga.or.at/",
-        "http://if-archive.guetech.org/"
+        "http://ifarchive.giga.or.at/"
     ];
 
     // if the URL starts with any mirror host
@@ -280,7 +309,8 @@ function mirror_ifarchive_url(url) {
         var if_mirror_paths = [
             "http://www.ibiblio.org/pub/docs/interactive-fiction/",
             "ftp://ftp.ibiblio.org/pub/docs/interactive-fiction/",
-            "ftp://ftp.funet.fi/pub/mirrors/ftp.ifarchive.org/if-archive/"
+            "ftp://ftp.funet.fi/pub/mirrors/ftp.ifarchive.org/if-archive/",
+            "http://if-archive.guetech.org/"
         ];
         for(i in if_mirror_paths) {
             if(url.indexOf(if_mirror_paths[i]) == 0) {
@@ -312,8 +342,7 @@ function resolve_mirror(url) {
         "http://www.ifarchive.info/",
         "http://ifarchive.ifreviews.org/",
         "http://ifarchive.heanet.ie/",
-        "http://ifarchive.giga.or.at/",
-        "http://if-archive.guetech.org/"
+        "http://ifarchive.giga.or.at/"
     ];
 
     var random_domain = if_mirror_hosts[Math.round(Math.random()*(if_mirror_hosts.length-1))];

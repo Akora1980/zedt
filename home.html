@@ -46,11 +46,19 @@
                     game_menu += " odd";
                 }
             }
+
+            if(!game.title) {
+                var temp_title = key.split("/").pop();
+                var final_dot_pos = temp_title.lastIndexOf(".");
+                if(final_dot_pos == -1) final_dot_pos = temp_title.length;
+                temp_title = temp_title.substring(0, final_dot_pos);
+            } else {
+                var temp_title = game.title;
+            }
             game_menu += "' id='g-" + encodeURIForId(key) + "'>";
             game_menu += "<td class='play-button-box' id='play-" + encodeURIForId(key) + "' title='Show/Hide Saves'></td>";
-            game_menu += "<td class='game-title'>" + (game.title?game.title:key.split("/").pop()) + "</td>"
+            game_menu += "<td class='game-title'>" + temp_title + "</td>"
             game_menu += "<td class='game-author'>"+ (game.author?game.author:"") + "</td>";
-
             game_menu += "<td class='game option-bar'>";
             game_menu += "<div class='game option-edit'><img class='game option-edit-image' id='ge-" + encodeURIForId(key) + "' src='images/edit.png' title='Edit' / ></div>";
             game_menu += "<div class='game option-delete'><img class='game option-delete-image' id='gd-" + encodeURIForId(key) + "' src='images/delete.png' title='Delete' / ></div>";
@@ -356,7 +364,7 @@
 
             chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
                 var is_even = ($(".game-table tbody").children("tr.game-box").size() % 2 == 1);
-                $(".game-table tbody").append(gameUI(request.url, {}, is_even));
+                $(".game-table tbody").append(gameUI(request.url, {title:request.title, author:request.author}, is_even));
                 $(".game-table").trigger("update");
                 sendResponse({});
             });

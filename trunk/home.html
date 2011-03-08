@@ -178,6 +178,24 @@
                 return false;
 			});
 
+            $('.play-button-box').live('mouseover', function(){
+                // destory all save lists on the page, and then show a list if it wasn't there already
+                var $save_area = $(this).parent().next('.saves');
+                $('.saves').remove();
+                $('.play-button-box').css({"background-image":"url('images/control_play.png')"});
+                $('.play-button-box').removeClass('pointing-down');
+                $save_area = $(saveUI(decodeURIFromId($(this).parent()[0].id.split('-')[1])));
+                $(this).parent().after($save_area);
+                if($save_area.children('td').first().children().size() == 0) {
+                    $save_area.children('td').css({"padding":"5px 20px"}).html("No save files");
+                }
+                $save_area.addClass($(this).parent().hasClass("even")?"even":"odd")
+                $save_area.show();
+                $(this).css({"background-image":"url('images/control_down.png')"});
+                $('.play-button-box').addClass('pointing-down');
+                return false;
+            });
+
             // load a save game on click
             $('.save-box').live('click', function(){
                 var id_parts = this.id.split('-');
@@ -390,8 +408,8 @@
     <img class="instruction-box-toggle" src="images/control_down.png" />
     <div class="instruction-text">
         <div>To start a new game, click on the title.</div>
-        <div>To see your save files for a game, click the arrow next to the title.</div><br />
-        To add new games, visit the <a onclick="openFFTab('http://ifarchive.org/indexes/if-archiveXgamesXzcode.html')">Interactive Fiction Archive</a>, <a onclick="openFFTab('http://www.wurb.com/if/platform/1');">Baf's Guide</a>, the <a onclick="openFFTab('http://ifdb.tads.org/');">IF Database</a>, or any other website that hosts z-code files, and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".<br /><br />
+        <div>To see your save files for a game, mouse over the arrow next to the title.</div><br />
+        To add new games, visit the <a onclick="window.open('http://ifarchive.org/indexes/if-archiveXgamesXzcode.html')">Interactive Fiction Archive</a>, <a onclick="window.open('http://www.wurb.com/if/platform/1');">Baf's Guide</a>, the <a onclick="window.open('http://ifdb.tads.org/');">IF Database</a>, or any other website that hosts z-code files, and right-click on any game with the extension "z3", "z5", "z8", or "zblorb".<br /><br />
 Alternatively, choose one of the options below:<br />
     </div>
     <div class="show-instruction">To start a new game, click...</div>

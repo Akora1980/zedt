@@ -14,14 +14,19 @@
     <menuitem id="context-zedt" label="&zedtContext.label;"
               accesskey="&zedtContext.accesskey;"
               class="menuitem-iconic"
-              image="chrome://zedt/content/html/icon_16.png"
+              image="chrome://zedt/content/html/icon.png"
               insertafter="context-stop"
               oncommand="zedt.onMenuItemCommand(event)"/>
   </popup>
 
-  <menupopup       id="menu_ToolsPopup">
-    <menuitem      id="zedttoolsmenu"   label="Zedt"    oncommand="zedt.openLibraryPage()"
-                   accesskey="Z"        position="8"    class="menuitem-iconic"/>
+  <menupopup id="menu_ToolsPopup">
+    <menuitem id="zedttoolsmenu"
+              label="Zedt"
+              oncommand="zedt.openLibraryPage()"
+              accesskey="Z"
+              position="8"
+              class="menuitem-iconic"
+              image="chrome://zedt/content/html/icon.png"/>
   </menupopup>
 
 
